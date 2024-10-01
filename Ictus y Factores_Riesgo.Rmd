@@ -30,21 +30,30 @@ output: html_document
 
 #Importación de datos
 #Subimos datos de la calidad del aire
+```
 library(readr)
-calidad_aire <- read_csv("data/calidad_aire.csv")
+calidad_aire <- read_csv("C:/Users/dresv/Desktop/seminario_fuentes/Seminario_Fuentes_Datos/data/calidad_aire.csv")
 View(calidad_aire)
-
+```
 #Subimos datos de sedentarismo
+```
 library(readr)
-sedentarismo <- read_delim("data/sedentarismo.csv", 
-                           delim = ";", escape_double = FALSE, trim_ws = TRUE)
+sedentarismo <- read_delim("C:/Users/dresv/Desktop/seminario_fuentes/Seminario_Fuentes_Datos/data/sedentarismo.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
 View(sedentarismo)
 
+```
 #Subimos datos exposición al humo
+```
 library(readr)
-exposicion_humo <- read_delim("data/exposicion_humo.csv", 
-                              delim = ";", escape_double = FALSE, trim_ws = TRUE)
+exposicion_humo <- read_delim("C:/Users/dresv/Desktop/seminario_fuentes/Seminario_Fuentes_Datos/data/exposicion_humo.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
 View(exposicion_humo)
+```
+
+```
+source("C:/Users/dresv/Desktop/seminario_fuentes/Seminario_Fuentes_Datos/poblacion_cyl.R") 
+´´´
 
 
 
