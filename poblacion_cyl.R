@@ -8,3 +8,11 @@ poblacion_cyl <- data.frame(
 )
 
 poblacion_cyl
+
+imprimir_poblacion_cyl <- function() {
+  return(poblacion_cyl)
+}
+
+imprimir_poblacion_cyl()
+
+
