@@ -29,14 +29,23 @@ output: html_document
 #Manipulación de datos
 
 #Importación de datos
-#Importamos datos de la calidad del aire
+
+#Importamos los datos de las altas hospitalarias por ictus
+```{r}
+library(readr)
+altas_hospitalarias_ictus <- read_delim("INPUT/data/altas_hospitalarias_ictus.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
+View(altas_hospitalarias_ictus)
+```
+
+#Importamos los datos de la calidad del aire
 ```{r}
 library(readr)
 calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
 View(calidad_aire)
 ```
 
-#Importamos datos de sedentarismo
+#Importamos los datos de sedentarismo
 
 ```{r} 
 
@@ -48,12 +57,20 @@ View(sedentarismo)
 ```
 
 
-#Importamos datos exposición al humo
+#Importamos los datos exposición al humo
 ```{r}
 library(readr)
 exposicion_humo <- read_delim("INPUT/data/exposicion_humo.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
 View(exposicion_humo)
+```
+
+#Importamos los datos de los centros de desintoxicación
+```{r}
+library(readr)
+centros_servicios_saisde <- read_delim("INPUT/data/centros_servicios_saisde.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
+View(centros_servicios_saisde)
 ```
 
 
