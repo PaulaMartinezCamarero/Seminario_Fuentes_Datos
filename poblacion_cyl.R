@@ -9,3 +9,13 @@ poblacion_cyl <- data.frame(
 
 poblacion_cyl
 
+<<<<<<< HEAD
+=======
+imprimir_poblacion_cyl <- function() {
+  return(poblacion_cyl)
+}
+
+imprimir_poblacion_cyl()
+
+
+>>>>>>> 4f2e3145efc8c1019bb604ab00c0150322eec818
