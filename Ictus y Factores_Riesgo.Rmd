@@ -29,14 +29,14 @@ output: html_document
 #Manipulación de datos
 
 #Importación de datos
-#Subimos datos de la calidad del aire
+#Importamos datos de la calidad del aire
 ```{r}
 library(readr)
 calidad_aire <- read_csv("C:/Users/dresv/Desktop/seminario_fuentes/Seminario_Fuentes_Datos/data/calidad_aire.csv")
 View(calidad_aire)
 ```
 
-#Subimos datos de sedentarismo
+#Importamos datos de sedentarismo
 ```{r}
 library(readr)
 sedentarismo <- read_delim("C:/Users/dresv/Desktop/seminario_fuentes/Seminario_Fuentes_Datos/data/sedentarismo.csv", 
@@ -45,7 +45,7 @@ View(sedentarismo)
 ```
 
 
-#Subimos datos exposición al humo
+#Importamos datos exposición al humo
 ```{r}
 library(readr)
 exposicion_humo <- read_delim("C:/Users/dresv/Desktop/seminario_fuentes/Seminario_Fuentes_Datos/data/exposicion_humo.csv", 
@@ -55,9 +55,14 @@ View(exposicion_humo)
 
 
 
+#Importamos función que imprime los habitantes de castilla y león por provincias
+```{r}
+source("INPUT/functions/poblacion_cyl.R")
+
+```
 
 
-source("C:/Users/dresv/Desktop/seminario_fuentes/Seminario_Fuentes_Datos/poblacion_cyl.R") 
+
 
 
 
