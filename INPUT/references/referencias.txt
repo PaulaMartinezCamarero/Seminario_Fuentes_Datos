@@ -1,0 +1,26 @@
+@article{senado1999factores,
+  title={Los factores de riesgo},
+  author={Senado Dumoy, Justo},
+  journal={Revista cubana de medicina general integral},
+  volume={15},
+  number={4},
+  pages={446--452},
+  year={1999},
+  publisher={1999, Editorial Ciencias M{\'e}dicas}
+}
+
+@inproceedings{martinez2000factores,
+  title={Factores de riesgo del ictus},
+  author={Mart{\'\i}nez-Vila, E and Irimia, P},
+  booktitle={Anales del sistema sanitario de Navarra},
+  volume={23},
+  pages={25--31},
+  year={2000}
+}  
+
+@mastersthesis{suarez2024influencia,
+  title={Influencia de la Contaminaci{\'o}n atmosf{\'e}rica en los ictus hemorr{\'a}gicos},
+  author={Su{\'a}rez Fern{\'a}ndez, Daniel and others},
+  type={{B.S.} thesis},
+  year={2024}
+}
