@@ -4,6 +4,9 @@ author: "Andrés Estévez, Paula Martínez"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 # Índice
 1. [Introducción](#introducción)
