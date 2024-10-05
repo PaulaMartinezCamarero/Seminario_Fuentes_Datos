@@ -7,7 +7,6 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 # Índice
 1. [Introducción](#introducción)
 2. [Objetivos](#objetivos)  
@@ -15,8 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
    2. [Relación entre ictus y sedentarismo](#relación-entre-ictus-y-sedentarismo)  
    3. [Relación entre ictus y la exposición al humo](#relación-entre-ictus-y-la-exposición-al-humo)  
    4. [Relación entre ictus y calidad del aire](#relación-entre-ictus-y-calidad-del-aire)  
-3. [Manipulación de datos](#manipulación-de-datos)  
-   1. [Importación de datos](#importación-de-datos)  
+3. [Procedencia y Descripción de  los datos](#Procedencia y Descripción-de-datos)  
+   1. [Descripción y Importación de datos](#Descripción y Importación-de-datos)  
    2. [Responder a las preguntas](#responder-a-las-preguntas)  
       1. [Ictus, edad y sexo](#ictus-edad-y-sexo)  
       2. [Ictus y sedentarismo](#ictus-y-sedentarismo)  
@@ -47,8 +46,32 @@ La calidad del aire es otro factor de riesgo del ictus, quizás menos conocido, 
 3.Estudiar la relación de estar expuesto al humo con la probabilidad de sufrir un ictus. Además, vamos a ver si hay más número de centros de ayuda para desintoxicación, en las provincias en las que más ictus haya habido.
 4.Analizar si a peor calidad del aire hay más riesgo de sufrir un ictus.
 
-  
 
+#Procedencia y Descripción  de datos
+
+Los datos han sido recabados de [Datos abiertos del gobierno de españa](https://datos.gob.es/es/) que hasta el momento contiene cerca de 90000 conjuntos de datos, distribuidos en un amplio número de temáticas.También supera las 550000 distribuciones, Además de 313 iniciativas de datos abiertos.
+
+
+#Descripción y Importación de datos
+**Descripción**
+Contamos con 3 sets de datos en tipo *.csv*.
+Este formato, **(Comma Separated Values)** son archivos de texto que en pricipio deberían estar con los caracteres separados por comas, aunque en algunos de nuestros datos se usa punto y coma en lugar de la coma.
+
+Estos son nuestros archivos *.csv*.:
+  -[calidad_aire](https://servicios.jcyl.es/esco/cargarFrmDatosHistoricos.action)
+  -[sedentarismo](https://datos.gob.es/es/catalogo/ea0010587-sedentarismo-segun-sexo-y-grupo-de-edad-poblacion-de-15-y-mas-anos-identificador-api-t15-p420-a2019-p06-l0-04006-px1)
+  -[exposicion_humo](https://datos.gob.es/es/catalogo/ea0010587-exposicion-al-humo-de-tabaco-en-lugares-cerrados-segun-sexo-pais-de-nacimiento-y-grupo-de-edad-poblacion-de-15-y-mas-anos-identificador-api-t15-p420-a2019-p03-l0-02026-px1)
+  
+También contamos con dos sets de datos *.json*.**(JavaScript Object Notation)** es un formato para almacenar e intercambiar datos.
+
+Estos son nuestros archivos *.json*.:
+  -[altas_hospitalarias_ictus](https://datos.gob.es/es/catalogo/a07002862-altas-hospitalarias-con-diagnostico-de-ictus)
+  -[centros_servicios_saisde](https://servicios.ine.es/wstempus/jsCache/es/DATOS_TABLA/65334?tip=AM&)
+Este último proviene del **Instituto Nacional de Estadística (INE)**.
+
+
+
+  
 #Manipulación de datos
 
 #Importación de datos
