@@ -81,14 +81,14 @@ Este último proviene del **Instituto Nacional de Estadística (INE)**.
 library(readr)
 altas_hospitalarias_ictus <- read_delim("INPUT/data/altas_hospitalarias_ictus.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
-View(altas_hospitalarias_ictus)
+#View(altas_hospitalarias_ictus)
 ```
 
 #Importamos los datos de la calidad del aire
 ```{r}
 library(readr)
 calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
-View(calidad_aire)
+#View(calidad_aire)
 ```
 
 #Importamos los datos de sedentarismo
@@ -99,7 +99,7 @@ library(readr)
 sedentarismo <- read_delim("INPUT/data/sedentarismo.csv", 
     delim = ";", escape_double = FALSE, na = "No consta", 
     trim_ws = TRUE)
-View(sedentarismo)
+#View(sedentarismo)
 ```
 
 
@@ -108,7 +108,7 @@ View(sedentarismo)
 library(readr)
 exposicion_humo <- read_delim("INPUT/data/exposicion_humo.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
-View(exposicion_humo)
+#View(exposicion_humo)
 ```
 
 #Importamos los datos de los centros de desintoxicación
@@ -116,7 +116,7 @@ View(exposicion_humo)
 library(readr)
 centros_servicios_saisde <- read_delim("INPUT/data/centros_servicios_saisde.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
-View(centros_servicios_saisde)
+#View(centros_servicios_saisde)
 ```
 ```{r}
 library(tidyverse)
