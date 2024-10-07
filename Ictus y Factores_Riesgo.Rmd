@@ -118,6 +118,49 @@ centros_servicios_saisde <- read_delim("INPUT/data/centros_servicios_saisde.csv"
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
 View(centros_servicios_saisde)
 ```
+```{r}
+library(tidyverse)
+library(rjson)
+centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde.json")
+centros_servicios_saisde
+head(centros_servicios_saisde)
+library(tidyjson)
+centros_servicios_saisde %>%
+  spread_all()
+  #View() ya tenemos los datos que queremos asiq no nos metemos mas adentro
+  
+```
+
+```{r}
+altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
+
+altas_hospitalarias_ictus %>%
+  spread_all() 
+  #View()
+```
+
+```{r}
+altas_hospitalarias_ictus %>%
+  spread_all() %>%
+  gather_object %>%
+  json_types %>%
+  count(name, type)
+
+```
+Probamos a hacer las linea 854 y 861 luego
+```{r}
+
+```
+
+
+```{r}
+altas_hospitalarias_ictus %>%
+  enter_object(fields) %>%
+  gather_object %>%
+  spread_all %>%
+  json_types%>%
+  count(name, type)
+```
 
 
 
