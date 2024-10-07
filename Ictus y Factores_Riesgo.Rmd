@@ -126,7 +126,10 @@ centros_servicios_saisde
 head(centros_servicios_saisde)
 library(tidyjson)
 centros_servicios_saisde %>%
-  spread_all()
+  spread_all() %>%
+  count(provincia = fields.provincia)
+
+
   #View() ya tenemos los datos que queremos asiq no nos metemos mas adentro
   
 ```
@@ -135,7 +138,8 @@ centros_servicios_saisde %>%
 altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
 
 altas_hospitalarias_ictus %>%
-  spread_all() 
+  spread_all() %>%
+
   #View()
 ```
 
@@ -148,9 +152,7 @@ altas_hospitalarias_ictus %>%
 
 ```
 Probamos a hacer las linea 854 y 861 luego
-```{r}
 
-```
 
 
 ```{r}
@@ -160,6 +162,20 @@ altas_hospitalarias_ictus %>%
   spread_all %>%
   json_types%>%
   count(name, type)
+```
+```{r}
+library(tidyverse)
+library(rjson)
+library(tidyjson)
+altas_hospitalarias_ictus %>%
+  spread_all %>%
+  enter_object(fields) %>%
+  gather_object %>%
+  spread_all %>%
+  #select(age= edad, sex=sexo,prov=provincia,procedencia=ambito_de_procedencia,ingreso=fecha_de_ingreso) %>%
+  group_by(fields.edad,fields.sexo)%>%
+  summarize(mean_age = mean(fields.edad, na.rm = TRUE))
+
 ```
 
 
