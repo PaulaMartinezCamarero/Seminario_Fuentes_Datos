@@ -75,6 +75,120 @@ altas_hospitalarias_ictus <- read_delim("INPUT/data/altas_hospitalarias_ictus.cs
 #View(altas_hospitalarias_ictus)
 ```
 
+```{r}
+cont_mujeres <- 0
+cont_hombres <- 0
+for(i in altas_hospitalarias_ictus$Sexo){
+  if(i=="Mujer"){
+    cont_mujeres <- cont_mujeres+1
+  }else if(i=="Hombre"){
+    cont_hombres <- cont_hombres+1
+  }
+}
+cat("hay un total de ", cont_mujeres, "mujeres y ", cont_hombres, "hombres\n")
+```
+Grupos de mujeres segun las edades
+```{r}
+
+m_0_18 <- 0
+m_19_35 <- 0
+m_36_50 <- 0
+m_51_65 <- 0
+m_mas_66 <- 0
+
+for(i in 1:nrow(altas_hospitalarias_ictus)){
+  if(altas_hospitalarias_ictus$Sexo[i] == "Mujer"){
+    e <- altas_hospitalarias_ictus$Edad[i]
+    if(e < 18){
+      m_0_18 <- m_0_18 + 1
+    } else if(e >= 19 && e <= 35){
+      m_19_35 <- m_19_35 + 1
+    } else if(e >= 36 && e <= 50){
+      m_36_50 <- m_36_50 + 1
+    } else if(e >= 51 && e <= 65){
+      m_51_65 <- m_51_65 + 1
+    } else if(e >= 66){
+      m_mas_66 <- m_mas_66 + 1
+    }
+  }
+}
+
+cat("Hay ", m_0_18, " mujeres de entre 0 y 18 años\n")
+cat("Hay ", m_19_35, " mujeres de entre 19 y 35 años\n")
+cat("Hay ", m_36_50, " mujeres de entre 36 y 50 años\n")
+cat("Hay ", m_51_65, " mujeres de entre 51 y 65 años\n")
+cat("Hay ", m_mas_66, " mujeres de más de 66 años\n")
+```
+
+Grupos de hombres segun las edades
+```{r}
+h_0_18 <- 0
+h_19_35 <- 0
+h_36_50 <- 0
+h_51_65 <- 0
+h_mas_66 <- 0
+
+for(i in 1:nrow(altas_hospitalarias_ictus)){
+  if(altas_hospitalarias_ictus$Sexo[i] == "Hombre"){
+    e <- altas_hospitalarias_ictus$Edad[i]
+    if(e < 18){
+      h_0_18 <- h_0_18 + 1
+    } else if(e >= 19 && e <= 35){
+      h_19_35 <- h_19_35 + 1
+    } else if(e >= 36 && e <= 50){
+      h_36_50 <- h_36_50 + 1
+    } else if(e >= 51 && e <= 65){
+      h_51_65 <- h_51_65 + 1
+    } else if(e >= 66){
+      h_mas_66 <- h_mas_66 + 1
+    }
+  }
+}
+
+cat("Hay ", h_0_18, " hombres de entre 0 y 18 años\n")
+cat("Hay ", h_19_35, " hombres de entre 19 y 35 años\n")
+cat("Hay ", h_36_50, " hombres de entre 36 y 50 años\n")
+cat("Hay ", h_51_65, " hombres de entre 51 y 65 años\n")
+cat("Hay ", h_mas_66, " hombres de más de 66 años\n")
+```
+```
+
+
+
+```{r}
+
+m_0_18 <- 0
+m_19_35 <- 0
+m_36_50 <- 0
+m_51_65 <- 0
+m_mas_66 <- 0
+
+
+for(i in altas_hospitalarias_ictus$Sexo){
+  if(i == "Mujer"){
+    for(e in altas_hospitalarias_ictus$Edad)
+    if(e< 18){
+      m_0_18 <- m_0_18 + 1
+    } else if(e>= 19 && e<= 35){
+      m_19_35 <- m_19_35 + 1
+    } else if(e >= 36 && e<= 50){
+      m_36_50 <- m_36_50 + 1
+    } else if(e>= 51 && e<= 65){
+      m_51_65 <- m_51_65 + 1
+    } else if(e >= 66){
+      m_mas_66 <- m_mas_66 + 1
+    }
+  }
+}
+
+cat("Hay ", m_0_18, " mujeres de entre 0 y 18 años\n")
+cat("Hay ", m_19_35, " mujeres de entre 19 y 35 años\n")
+cat("Hay ", m_36_50, " mujeres de entre 36 y 50 años\n")
+cat("Hay ", m_51_65, " mujeres de entre 51 y 65 años\n")
+cat("Hay ", m_mas_66, " mujeres de más de 66 años\n")
+
+```
+
 #Importamos los datos de la calidad del aire
 ```{r}
 library(readr)
