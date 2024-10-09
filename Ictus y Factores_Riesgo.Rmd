@@ -2,26 +2,17 @@
 title: "Ictus y Factores_Riesgo"
 author: "Andrés Estévez, Paula Martínez"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+
 ---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Índice
-1. [Introducción](#introducción)
-2. [Objetivos](#objetivos)  
-   1. [Relación entre ictus, edad y sexo](#relación-entre-ictus-edad-y-sexo)  
-   2. [Relación entre ictus y sedentarismo](#relación-entre-ictus-y-sedentarismo)  
-   3. [Relación entre ictus y la exposición al humo](#relación-entre-ictus-y-la-exposición-al-humo)  
-   4. [Relación entre ictus y calidad del aire](#relación-entre-ictus-y-calidad-del-aire)  
-3. [Procedencia y Descripción de  los datos](#Procedencia y Descripción-de-datos)  
-   1. [Descripción y Importación de datos](#Descripción y Importación-de-datos)  
-   2. [Responder a las preguntas](#responder-a-las-preguntas)  
-      1. [Ictus, edad y sexo](#ictus-edad-y-sexo)  
-      2. [Ictus y sedentarismo](#ictus-y-sedentarismo)  
-      3. [Ictus y exposición al humo](#ictus-y-exposición-al-humo)  
-      4. [Ictus y calidad del aire](#ictus-y-calidad-del-aire)  
-4. [Conclusiones](#conclusiones)
+
 
 
 #Introducción
