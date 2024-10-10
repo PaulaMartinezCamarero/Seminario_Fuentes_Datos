@@ -151,43 +151,31 @@ cat("Hay ", h_36_50, " hombres de entre 36 y 50 años\n")
 cat("Hay ", h_51_65, " hombres de entre 51 y 65 años\n")
 cat("Hay ", h_mas_66, " hombres de más de 66 años\n")
 ```
-```
-
-
 
 ```{r}
-
-m_0_18 <- 0
-m_19_35 <- 0
-m_36_50 <- 0
-m_51_65 <- 0
-m_mas_66 <- 0
-
-
-for(i in altas_hospitalarias_ictus$Sexo){
-  if(i == "Mujer"){
-    for(e in altas_hospitalarias_ictus$Edad)
-    if(e< 18){
-      m_0_18 <- m_0_18 + 1
-    } else if(e>= 19 && e<= 35){
-      m_19_35 <- m_19_35 + 1
-    } else if(e >= 36 && e<= 50){
-      m_36_50 <- m_36_50 + 1
-    } else if(e>= 51 && e<= 65){
-      m_51_65 <- m_51_65 + 1
-    } else if(e >= 66){
-      m_mas_66 <- m_mas_66 + 1
-    }
-  }
-}
-
-cat("Hay ", m_0_18, " mujeres de entre 0 y 18 años\n")
-cat("Hay ", m_19_35, " mujeres de entre 19 y 35 años\n")
-cat("Hay ", m_36_50, " mujeres de entre 36 y 50 años\n")
-cat("Hay ", m_51_65, " mujeres de entre 51 y 65 años\n")
-cat("Hay ", m_mas_66, " mujeres de más de 66 años\n")
-
+library(dplyr)
+t2 <- tibble(
+  Sexo = rep(c("Hombres", "Mujeres"), each = 5),
+  Edad = rep(c("0-18", "19-35", "36-50", "51-65", "66+"), times = 2),
+  Poblacion = c(h_0_18, h_19_35, h_36_50, h_51_65, h_mas_66, 
+                m_0_18, m_19_35, m_36_50, m_51_65, m_mas_66)
+)
 ```
+```{r}
+
+library(ggplot2)
+library(tidyverse)
+
+ggplot(data = t2, aes(x = Edad, y = Poblacion,fill=Sexo)) + 
+  geom_bar( stat = "identity", position = "dodge",colour = "black") +
+  labs(title = "Distribución de Población por Sexo y Edad",
+       x = "Grupos de Edad", y = "Población") +
+  theme_minimal()
+```
+
+
+
+
 
 #Importamos los datos de la calidad del aire
 ```{r}
