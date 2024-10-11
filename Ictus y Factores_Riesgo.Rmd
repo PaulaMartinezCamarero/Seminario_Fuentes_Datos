@@ -74,6 +74,9 @@ altas_hospitalarias_ictus <- read_delim("INPUT/data/altas_hospitalarias_ictus.cs
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
 #View(altas_hospitalarias_ictus)
 ```
+-Para resolver el primer objetivo vamos a:
+  - 1 Obtener las edades de todos los pacientes para ver si la edad es un factor                 determinante en el aumento de los ictus.
+ 
 
 ```{r}
 cont_mujeres <- 0
@@ -88,6 +91,9 @@ for(i in altas_hospitalarias_ictus$Sexo){
 cat("hay un total de ", cont_mujeres, "mujeres y ", cont_hombres, "hombres\n")
 ```
 Grupos de mujeres segun las edades
+ - 2 Obtener el numero de hombres y mujeres para ver si el sexo influye en la cantidad de        ictus
+
+  
 ```{r}
 
 m_0_18 <- 0
@@ -121,6 +127,8 @@ cat("Hay ", m_mas_66, " mujeres de más de 66 años\n")
 ```
 
 Grupos de hombres segun las edades
+  - 3 Juntar la edad con el sexo para ver la influencia de ambos factores en los ictus
+
 ```{r}
 h_0_18 <- 0
 h_19_35 <- 0
@@ -151,7 +159,7 @@ cat("Hay ", h_36_50, " hombres de entre 36 y 50 años\n")
 cat("Hay ", h_51_65, " hombres de entre 51 y 65 años\n")
 cat("Hay ", h_mas_66, " hombres de más de 66 años\n")
 ```
-
+  - 4 Obtener el numero de casos por provincias para empezar a relacionarlo con los            siguientes objetivos
 ```{r}
 library(dplyr)
 t2 <- tibble(
@@ -270,6 +278,24 @@ altas_hospitalarias_ictus %>%
   summarize(mean_age = mean(fields.edad, na.rm = TRUE))
 
 ```
+```{r}
+library(tidyverse)
+library(rjson)
+library(tidyjson)
+
+altas_hospitalarias_ictus %>%
+  spread_all %>%
+  enter_object(fields) %>%
+  gather_object %>%
+  spread_all %>%
+  rename(Edad=fields.edad)%>%
+  select(Edad)
+
+
+
+
+```
+
 
 
 
