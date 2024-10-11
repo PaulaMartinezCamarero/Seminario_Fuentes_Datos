@@ -73,9 +73,66 @@ library(readr)
 altas_hospitalarias_ictus <- read_delim("INPUT/data/altas_hospitalarias_ictus.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
 #View(altas_hospitalarias_ictus)
+
 ```
+
+```{r}
+altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
+
+altas_hospitalarias_ictus %>%
+  spread_all() %>%
+
+  #View()
+```
+#Ictus, edad y sexo
 -Para resolver el primer objetivo vamos a:
   - 1 Obtener las edades de todos los pacientes para ver si la edad es un factor                 determinante en el aumento de los ictus.
+```{r}
+altas_hospitalarias_ictus %>%
+  spread_all() %>%
+  gather_object %>%
+  json_types %>%
+  count(name, type)
+
+```
+
+```{r}
+altas_hospitalarias_ictus %>%
+  enter_object(fields) %>%
+  gather_object %>%
+  spread_all %>%
+  json_types%>%
+  count(name, type)
+```
+
+```{r}
+library(tidyverse)
+library(rjson)
+library(tidyjson)
+altas_hospitalarias_ictus %>%
+  spread_all %>%
+  enter_object(fields) %>%
+  gather_object %>%
+  spread_all %>%
+  #select(age= edad, sex=sexo,prov=provincia,procedencia=ambito_de_procedencia,ingreso=fecha_de_ingreso) %>%
+  group_by(fields.edad,fields.sexo)%>%
+  summarize(mean_age = mean(fields.edad, na.rm = TRUE))
+
+```
+
+```{r}
+library(tidyverse)
+library(rjson)
+library(tidyjson)
+
+altas_hospitalarias_ictus %>%
+  spread_all() %>%               
+  enter_object("fields") %>%     
+  spread_all() %>%              
+  rename(Edad = edad) %>%         
+  select(Edad)
+
+```
  
 
 ```{r}
@@ -90,10 +147,13 @@ for(i in altas_hospitalarias_ictus$Sexo){
 }
 cat("hay un total de ", cont_mujeres, "mujeres y ", cont_hombres, "hombres\n")
 ```
-Grupos de mujeres segun las edades
- - 2 Obtener el numero de hombres y mujeres para ver si el sexo influye en la cantidad de        ictus
 
+  - 2 Obtener el numero de hombres y mujeres para ver si el sexo influye en la cantidad de        ictus
+
+
+  - 3 Juntar la edad con el sexo para ver la influencia de ambos factores en los ictus
   
+Grupos de mujeres segun las edades
 ```{r}
 
 m_0_18 <- 0
@@ -127,7 +187,6 @@ cat("Hay ", m_mas_66, " mujeres de más de 66 años\n")
 ```
 
 Grupos de hombres segun las edades
-  - 3 Juntar la edad con el sexo para ver la influencia de ambos factores en los ictus
 
 ```{r}
 h_0_18 <- 0
@@ -159,7 +218,8 @@ cat("Hay ", h_36_50, " hombres de entre 36 y 50 años\n")
 cat("Hay ", h_51_65, " hombres de entre 51 y 65 años\n")
 cat("Hay ", h_mas_66, " hombres de más de 66 años\n")
 ```
-  - 4 Obtener el numero de casos por provincias para empezar a relacionarlo con los            siguientes objetivos
+
+  
 ```{r}
 library(dplyr)
 t2 <- tibble(
@@ -183,6 +243,7 @@ ggplot(data = t2, aes(x = Edad, y = Poblacion,fill=Sexo)) +
 
 
 
+  - 4 Obtener el numero de casos por provincias para empezar a relacionarlo con los            siguientes objetivos
 
 
 #Importamos los datos de la calidad del aire
@@ -235,66 +296,16 @@ centros_servicios_saisde %>%
   
 ```
 
-```{r}
-altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
 
-altas_hospitalarias_ictus %>%
-  spread_all() %>%
 
-  #View()
-```
 
-```{r}
-altas_hospitalarias_ictus %>%
-  spread_all() %>%
-  gather_object %>%
-  json_types %>%
-  count(name, type)
-
-```
 Probamos a hacer las linea 854 y 861 luego
 
 
 
-```{r}
-altas_hospitalarias_ictus %>%
-  enter_object(fields) %>%
-  gather_object %>%
-  spread_all %>%
-  json_types%>%
-  count(name, type)
-```
-```{r}
-library(tidyverse)
-library(rjson)
-library(tidyjson)
-altas_hospitalarias_ictus %>%
-  spread_all %>%
-  enter_object(fields) %>%
-  gather_object %>%
-  spread_all %>%
-  #select(age= edad, sex=sexo,prov=provincia,procedencia=ambito_de_procedencia,ingreso=fecha_de_ingreso) %>%
-  group_by(fields.edad,fields.sexo)%>%
-  summarize(mean_age = mean(fields.edad, na.rm = TRUE))
-
-```
-```{r}
-library(tidyverse)
-library(rjson)
-library(tidyjson)
-
-altas_hospitalarias_ictus %>%
-  spread_all %>%
-  enter_object(fields) %>%
-  gather_object %>%
-  spread_all %>%
-  rename(Edad=fields.edad)%>%
-  select(Edad)
 
 
 
-
-```
 
 
 
@@ -311,7 +322,7 @@ source("INPUT/functions/poblacion_cyl.R")
 
 
 
-#Ictus, edad y sexo
+
 
 #Ictus y sedentarismo
 
