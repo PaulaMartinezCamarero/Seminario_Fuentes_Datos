@@ -77,6 +77,7 @@ altas_hospitalarias_ictus <- read_delim("INPUT/data/altas_hospitalarias_ictus.cs
 ```
 
 ```{r}
+library(rjson)
 altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
 
 altas_hospitalarias_ictus %>%
@@ -125,15 +126,25 @@ library(tidyverse)
 library(rjson)
 library(tidyjson)
 
-altas_hospitalarias_ictus %>%
-  spread_all() %>%               
+edades_total <- altas_hospitalarias_ictus %>%
+  spread_all %>%               
   enter_object("fields") %>%     
-  spread_all() %>%              
+  spread_all() %>% 
+  #con gather_object nos muestra 220,888 resultados
   rename(Edad = edad) %>%         
   select(Edad)
 
 ```
  
+ 
+ 
+```{r}
+#edades_total$Edad
+source("INPUT/functions/total_por_edad.R")
+resultados <- total_por_edad(edades_total)
+print(resultados)
+
+```
 
 ```{r}
 cont_mujeres <- 0
