@@ -127,21 +127,26 @@ edades_total <- altas_hospitalarias_ictus %>%
 ```{r}
 #edades_total$Edad
 source("INPUT/functions/total_por_edad.R")
-resultados <- total_por_edad(edades_total)
-print(resultados)
+resultados_edad <- total_por_edad(edades_total)
+print(resultados_edad)
 
 ```
+
 ```{r}
-regresion_edad_ictus <- lm(Conteo~poly(Edad,3),data=resultados)
+regresion_edad_ictus <- lm(Conteo~poly(Edad,3),data=resultados_edad)
 summary(regresion_edad_ictus)
 ```
 
 ```{r}
-ggplot(data=resultados, aes(x=Edad,y=Conteo))+
+ggplot(data=resultados_edad, aes(x=Edad,y=Conteo))+
   geom_point()+
   geom_smooth()
 ```
-conteo por edad
+
+  - 2 Obtener el numero de hombres y mujeres para ver si el sexo influye en la cantidad de        ictus
+
+conteo por sexo
+
 ```{r}
 library(tidyverse)
 library(rjson)
@@ -154,8 +159,50 @@ sexototal <- altas_hospitalarias_ictus %>%
   #con gather_object nos muestra 220,888 resultados
   rename(Sexo = sexo) %>%         
   select(Sexo)
-sexototal
+total_sexo <- sexototal$Sexo
+#total_sexo
 ```
+
+```{r}
+source("INPUT/functions/total_por_sexo.R")
+resultados_sexo <- total_por_sexo(total_sexo)
+print(resultados_sexo)
+
+
+```
+
+```{r}
+regresion_sexo_ictus <- lm(Conteo~Sexo,data=resultados_sexo)
+summary(regresion_sexo_ictus)
+```
+```{r}
+#ggplot(data=resultados_sexo, aes(x=Sexo,y=Conteo))+
+  #geom_point()+
+  #geom_smooth()
+```
+
+Relacionamos la edad con el sexo
+
+```{r}
+str(resultados_edad)
+str(resultados_sexo)
+resultados_combinados <- data.frame(
+  resultados_edad,
+  resultados_sexo
+)
+resultados_combinados
+resultados_combinados$Conteo_Final <- resultados_combinados$Conteo
+
+# Elimina la columna innecesaria 'Conteo.1'
+resultados_combinados <- resultados_combinados[, c("Edad", "Sexo", "Conteo_Final")]
+
+# Mostrar el resultado final
+head(resultados_combinados)
+
+#tutoria
+
+```
+
 
 ```{r}
 cont_mujeres <- 0
@@ -169,8 +216,6 @@ for(i in altas_hospitalarias_ictus$Sexo){
 }
 cat("hay un total de ", cont_mujeres, "mujeres y ", cont_hombres, "hombres\n")
 ```
-
-  - 2 Obtener el numero de hombres y mujeres para ver si el sexo influye en la cantidad de        ictus
 
 
   - 3 Juntar la edad con el sexo para ver la influencia de ambos factores en los ictus
