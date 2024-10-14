@@ -105,7 +105,7 @@ altas_hospitalarias_ictus %>%
   json_types%>%
   count(name, type)
 ```
-
+Calculamos conteo por edad
 
 ```{r}
 library(tidyverse)
@@ -132,13 +132,29 @@ print(resultados)
 
 ```
 ```{r}
-regresion_edad_ictus <- lm(Conteo~Edad,data=resultados)
+regresion_edad_ictus <- lm(Conteo~poly(Edad,3),data=resultados)
 summary(regresion_edad_ictus)
 ```
+
 ```{r}
 ggplot(data=resultados, aes(x=Edad,y=Conteo))+
   geom_point()+
   geom_smooth()
+```
+conteo por edad
+```{r}
+library(tidyverse)
+library(rjson)
+library(tidyjson)
+
+sexototal <- altas_hospitalarias_ictus %>%
+  spread_all %>%               
+  enter_object("fields") %>%     
+  spread_all() %>% 
+  #con gather_object nos muestra 220,888 resultados
+  rename(Sexo = sexo) %>%         
+  select(Sexo)
+sexototal
 ```
 
 ```{r}
