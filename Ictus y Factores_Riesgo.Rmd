@@ -106,20 +106,6 @@ altas_hospitalarias_ictus %>%
   count(name, type)
 ```
 
-```{r}
-library(tidyverse)
-library(rjson)
-library(tidyjson)
-altas_hospitalarias_ictus %>%
-  spread_all %>%
-  enter_object(fields) %>%
-  gather_object %>%
-  spread_all %>%
-  #select(age= edad, sex=sexo,prov=provincia,procedencia=ambito_de_procedencia,ingreso=fecha_de_ingreso) %>%
-  group_by(fields.edad,fields.sexo)%>%
-  summarize(mean_age = mean(fields.edad, na.rm = TRUE))
-
-```
 
 ```{r}
 library(tidyverse)
@@ -144,6 +130,15 @@ source("INPUT/functions/total_por_edad.R")
 resultados <- total_por_edad(edades_total)
 print(resultados)
 
+```
+```{r}
+regresion_edad_ictus <- lm(Conteo~Edad,data=resultados)
+summary(regresion_edad_ictus)
+```
+```{r}
+ggplot(data=resultados, aes(x=Edad,y=Conteo))+
+  geom_point()+
+  geom_smooth()
 ```
 
 ```{r}
