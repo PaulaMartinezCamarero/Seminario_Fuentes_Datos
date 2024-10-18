@@ -296,6 +296,7 @@ t2 <- tibble(
                 m_0_18, m_19_35, m_36_50, m_51_65, m_mas_66)
 )
 ```
+
 ```{r}
 
 library(ggplot2)
@@ -311,6 +312,19 @@ ggplot(data = t2, aes(x = Edad, y = Poblacion,fill=Sexo)) +
 
 
   - 4 Obtener el numero de casos por provincias para empezar a relacionarlo con los            siguientes objetivos
+  
+```{r}
+Provincias <- altas_hospitalarias_ictus%>%
+  spread_all()%>%
+  enter_object(fields)%>%
+  rename(Provincia=fields.provincia)%>%
+  select(Provincia)
+```
+
+```{r}
+source("INPUT/functions/ictus_por_provincia.R")
+ictus_por_provincia(Provincias)
+```
 
 
 #Importamos los datos de la calidad del aire
