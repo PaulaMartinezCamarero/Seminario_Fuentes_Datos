@@ -365,10 +365,10 @@ centros_servicios_saisde <- read_delim("INPUT/data/centros_servicios_saisde.csv"
 library(tidyverse)
 library(rjson)
 centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde.json")
-centros_servicios_saisde
-head(centros_servicios_saisde)
+#centros_servicios_saisde
+#head(centros_servicios_saisde)
 library(tidyjson)
-centros_servicios_saisde %>%
+Centros<- centros_servicios_saisde %>%
   spread_all() %>%
   count(provincia = fields.provincia)
 
@@ -394,10 +394,20 @@ Probamos a hacer las linea 854 y 861 luego
 #Importamos función que imprime los habitantes de castilla y león por provincias
 ```{r}
 source("INPUT/functions/poblacion_cyl.R")
+poblacion_cyl
 
 ```
+Para tener una referencia entre los centros de desintoxicación por provincia con el número de habitantes de esa provincia calcularemos cuál es el número de habitantes por centro; Con el obetivo de ver realmente si hay más ictus en aquellas provincias donde el número de habitantes por centro es menor y la el consumo de drogas es un factor significativo en los ictus o por el contrario no lo es.
 
 
+```{r}
+pob_centros <- full_join(poblacion_cyl,Centros)
+tabla <- pob_centros%>%
+  select(provincia,Poblacion_total,n)
+source("INPUT/functions/divide.R")
+hab_centro <- divide(tabla$Poblacion_total,tabla$n)
+#faltaria indicar que con que provincia se corresponden esos datos.
+```
 
 
 
