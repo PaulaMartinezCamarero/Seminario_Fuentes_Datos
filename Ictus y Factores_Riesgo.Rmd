@@ -371,7 +371,7 @@ library(tidyjson)
 Centros<- centros_servicios_saisde %>%
   spread_all() %>%
   count(provincia = fields.provincia)
-
+print(Centros)
 
   #View() ya tenemos los datos que queremos asiq no nos metemos mas adentro
   
@@ -407,9 +407,42 @@ tabla <- pob_centros%>%
 source("INPUT/functions/divide.R")
 hab_centro <- divide(tabla$Poblacion_total,tabla$n)
 #faltaria indicar que con que provincia se corresponden esos datos.
+
+resultado <- tabla %>%
+  select(provincia, hab_centro)
+print(resultado)
+
 ```
 
 
+Lo lógico es esperar que en las provincias que cuentan con un menor número de habitantes, haya menor número de ictus y menor número de centros de desintoxicación.
+
+```{r}
+
+#Daba un error de que ictus_por_provincia_ictus no podia ponerse en la regresión multiple porque era una función, por lo que lo he convertido en dataframe
+numero_ictus <- ictus_por_provincia(Provincias)
+df <- as.data.frame(numero_ictus)
+
+print(df)
+
+
+#Y ahora da otro error porque dice que hay un numero diferente de filas, esto es porque en poblacion_cyl aparece tb la población total de cyl, para que desaparezca el error debemos quitar la ultima fila.
+
+pob_lo_que_quiero <- poblacion_cyl%>%
+  select(provincia, Poblacion_total)
+pob_lo_que_quiero
+
+pob_cyl_sin_ult_fila=pob_lo_que_quiero[1:9,]
+pob_cyl_sin_ult_fila
+
+datos <- data.frame(pob=poblacion_cyl_sin_ult_fila,
+                    centros= Centros,
+                    num_ictus=df)
+datos
+
+reg_mul <- lm(df ~ pob_cyl_sin_ult_fila + Centros, data = datos)
+
+```
 
 
 
@@ -420,6 +453,8 @@ hab_centro <- divide(tabla$Poblacion_total,tabla$n)
 #Ictus y exposición al humo
 
 #Ictus y calidad del aire
+
+
 
 #Conclusiones
 
