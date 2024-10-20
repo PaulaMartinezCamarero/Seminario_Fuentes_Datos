@@ -407,7 +407,7 @@ tabla <- pob_centros%>%
 source("INPUT/functions/divide.R")
 hab_centro <- divide(tabla$Poblacion_total,tabla$n)
 #faltaria indicar que con que provincia se corresponden esos datos.
-
+tabla$hab_centro <- hab_centro
 resultado <- tabla %>%
   select(provincia, hab_centro)
 print(resultado)
@@ -435,12 +435,12 @@ pob_lo_que_quiero
 pob_cyl_sin_ult_fila=pob_lo_que_quiero[1:9,]
 pob_cyl_sin_ult_fila
 
-datos <- data.frame(pob=poblacion_cyl_sin_ult_fila,
+datos <- data.frame(pob=pob_cyl_sin_ult_fila,
                     centros= Centros,
                     num_ictus=df)
 datos
 
-reg_mul <- lm(df ~ pob_cyl_sin_ult_fila + Centros, data = datos)
+reg_mul <- lm(num_ictus ~ pob_cyl_sin_ult_fila + Centros, data = datos)
 
 ```
 
