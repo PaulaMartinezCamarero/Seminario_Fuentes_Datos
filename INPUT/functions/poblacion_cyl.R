@@ -1,5 +1,5 @@
 poblacion_cyl <- data.frame(
-  provincia = c("Ávila", "Burgos", "León", "Palencia", "Salamanca",
+  provincia = c("Avila", "Burgos", "León", "Palencia", "Salamanca",
                 "Segovia", "Soria", "Valladolid", "Zamora", "Castilla y León"),
   Poblacion_total = c(159764, 357370, 448573, 157787, 327089, 155332, 89528, 521333, 166927, 2383703),
   Poblacion_extranjera = c(12868, 33150, 23398, 8581, 18606, 20015, 10363, 33352, 7601, 167934),

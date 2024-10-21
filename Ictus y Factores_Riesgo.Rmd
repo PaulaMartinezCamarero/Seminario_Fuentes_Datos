@@ -222,11 +222,14 @@ Provincias <- altas_hospitalarias_ictus%>%
   enter_object(fields)%>%
   rename(Provincia=fields.provincia)%>%
   select(Provincia)
+Provincias$Provincia <- ifelse(Provincias$Provincia == "Ávila", "Avila", Provincias$Provincia)
+Provincias
+
 ```
 
 ```{r}
 source("INPUT/functions/ictus_por_provincia.R")
-ictus_por_provincia(Provincias)
+ictus_por_provincia(Provincias$Provincia)
 ```
 
 
@@ -270,10 +273,14 @@ library(tidyjson)
 Centros<- centros_servicios_saisde %>%
   spread_all() %>%
   count(provincia = fields.provincia)
-print(Centros)
-Centros$provincia[9]
+Centros$provincia[9]="Avila"
 
-  #View() ya tenemos los datos que queremos asiq no nos metemos mas adentro
+print(Centros)
+
+ordenadas <- arrange(Centros,Centros$provincia)
+ordenadas
+
+#View() ya tenemos los datos que queremos asiq no nos metemos mas adentro
   
 ```
 
@@ -301,7 +308,7 @@ Para tener una referencia entre los centros de desintoxicación por provincia co
 
 
 ```{r}
-pob_centros <- full_join(poblacion_cyl,Centros)
+pob_centros <- full_join(poblacion_cyl,ordenadas)
 tabla <- pob_centros%>%
   select(provincia,Poblacion_total,n)
 source("INPUT/functions/divide.R")
@@ -322,7 +329,7 @@ Lo lógico es esperar que en las provincias que cuentan con un menor número de 
 #Daba un error de que ictus_por_provincia_ictus no podia ponerse en la regresión multiple porque era una función, por lo que lo he convertido en dataframe
 numero_ictus <- ictus_por_provincia(Provincias)
 df <- as.data.frame(numero_ictus)
-df$prov <-c("Ávila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora")
+df$prov <-c("Avila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora")
 
 
 #rownames(df)=c
@@ -333,15 +340,15 @@ pob_lo_que_quiero <- poblacion_cyl%>%
   select(provincia, Poblacion_total)
 pob_lo_que_quiero
 
-pob_cyl_sin_ult_fila=pob_lo_que_quiero[1:9,]
+pob_cyl_sin_ult_fila <- pob_lo_que_quiero[1:9,]
 pob_cyl_sin_ult_fila
 
-library("dplyr")
-Centros
-arrange(.data=Centros,(Centros$provincia))
+#library("dplyr")
+#Centros
+arrange(.data=ordenadas,(ordenadas$provincia))
 
 datos <- data.frame(pob=pob_cyl_sin_ult_fila,
-                    centros= Centros,
+                    centros= arrange(.data=ordenadas,(ordenadas$provincia)),
                     num_ictus=df)
 str(datos)
 datos

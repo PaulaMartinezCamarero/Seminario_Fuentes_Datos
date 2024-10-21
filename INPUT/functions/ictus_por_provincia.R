@@ -1,6 +1,6 @@
 ictus_por_provincia <- function(Provincias) {
   
-  provincias_cyl <- c("Ávila", "Burgos", "León", "Palencia", "Salamanca", "Segovia", "Soria", "Valladolid", "Zamora")
+  provincias_cyl <- c("Avila", "Burgos", "León", "Palencia", "Salamanca", "Segovia", "Soria", "Valladolid", "Zamora")
   
   conteos <- numeric(length(provincias_cyl))
   names(conteos) <- provincias_cyl
