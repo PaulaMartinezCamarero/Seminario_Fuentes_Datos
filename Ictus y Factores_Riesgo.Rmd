@@ -181,26 +181,36 @@ summary(regresion_sexo_ictus)
   #geom_point()+
   #geom_smooth()
 ```
+ANOVA
+
+```{r}
+media_desviacion <- altas_hospitalarias_ictus %>%
+  spread_all %>%               
+  enter_object("fields") %>%     
+  spread_all() %>% 
+  group_by(sexo) %>%
+  summarise(
+    media = mean(edad, na.rm = TRUE),
+    desviacion_estandar = sd(edad, na.rm = TRUE)
+  )
+
+media_desviacion
+anova_resultado <- aov(edades_total$Edad~ sexototal$Sexo, data = altas_hospitalarias_ictus)
+
+# Resumen del ANOVA
+summary(anova_resultado)
+```
+
+
 
 Relacionamos la edad con el sexo
 
 ```{r}
 str(resultados_edad)
 str(resultados_sexo)
-resultados_combinados <- data.frame(
-  resultados_edad,
-  resultados_sexo
-)
+resultados_combinados <- full_join(resultados_edad,resultados_sexo)
 resultados_combinados
-resultados_combinados$Conteo_Final <- resultados_combinados$Conteo
 
-# Elimina la columna innecesaria 'Conteo.1'
-resultados_combinados <- resultados_combinados[, c("Edad", "Sexo", "Conteo_Final")]
-
-# Mostrar el resultado final
-head(resultados_combinados)
-
-#tutoria
 
 ```
 
