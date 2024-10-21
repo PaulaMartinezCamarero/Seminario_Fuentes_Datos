@@ -271,6 +271,7 @@ Centros<- centros_servicios_saisde %>%
   spread_all() %>%
   count(provincia = fields.provincia)
 print(Centros)
+Centros$provincia[9]
 
   #View() ya tenemos los datos que queremos asiq no nos metemos mas adentro
   
@@ -335,14 +336,37 @@ pob_lo_que_quiero
 pob_cyl_sin_ult_fila=pob_lo_que_quiero[1:9,]
 pob_cyl_sin_ult_fila
 
+library("dplyr")
+Centros
+arrange(.data=Centros,(Centros$provincia))
+
 datos <- data.frame(pob=pob_cyl_sin_ult_fila,
                     centros= Centros,
                     num_ictus=df)
 str(datos)
-datos$pob.provincia
+datos
+
+
 
 ```
 
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+
+grafica <- datos %>%
+  ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus.numero_ictus), y = num_ictus.numero_ictus)) +
+  geom_bar(stat = "identity", aes(fill = centros.n)) +
+  scale_fill_gradient(low = "peachpuff", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  labs(x = "Provincias", y = "Número de ictus", fill = "Centros detox") +
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
+
+grafica
+
+```
 
 
 
