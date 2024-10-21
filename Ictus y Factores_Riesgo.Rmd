@@ -22,6 +22,7 @@ save.image(file="objetos_actuales.Rdata")
 
 #cuando te metes
 load("OUTPUT/objetos_actuales.Rdata")
+
 ```
 
 
@@ -401,7 +402,7 @@ str(resultado_sin_ult_fila)
 library(ggplot2)
 grafica3 <-
   ggplot(mapping = aes(x = reorder(datos$pob.provincia, datos$num_ictus.numero_ictus), y = resultado_sin_ult_fila$hab_centro)) +
-  geom_bar(stat = "identity", fill = "blue") +
+  geom_bar(stat = "identity", fill = "green") +
   labs(x = "Provincias", y = "Número habitantes por centro") +
   scale_y_continuous(expand = expansion(mult = c(0, .1))) +
   theme_classic() +
@@ -412,12 +413,26 @@ grafica3
 ```{r}
 library(dplyr)
 tabla_centros <- tibble(Provincia=datos$pob.provincia,
+                        Numero_de_ictus=datos$num_ictus.numero_ictus,
                         Poblacion_total_cyl=pob_cyl_sin_ult_fila$Poblacion_total,
                         Numero_centros=datos$centros.n,
-                        Habitantes_por_centro=resultado_sin_ult_fila$hab_centro)
+                        Habitantes_por_centro=resultado_sin_ult_fila$hab_centro,
+                        Porcentaje_ictus_por_hab=(Numero_de_ictus/Poblacion_total_cyl)*100)
 tabla_centros
 ```
+Tras la realización de las tres gráficas anteriores para ver como están relacionados el número de ictus de cada provincia con el número de centros de desintoxicación que hay en las mismas, y el número de habitantes por centro de cada una de ellas, hemos llegado a las siguientes conclusiones:
 
+  - Las poblaciones que cuentan con un menor número de habitantes (Ávila, Palencia, Soria y Zamora) son a su vez las que cuentan con un     menor porcentaje de ictus; esto seguramente pueda deberse a que por regla general en las ciudades pequeñas se suelen llevar mejores     habitos de vida.
+  
+  - Podemos destacar tres casos en especial:
+  
+      1. En Palencia, cuentan con un número elevado de centros de desintoxicación para la población que tiene; lo cual supone que haya        pocos habitantes por centro, pudiendo ver así como el porcentaje de ictus es el segundo más pequeño.Por lo tanto podría parecer         que la presencia de más centros ayuda a reducir el número de ictus.
+      
+      2. Segovia tiene un gran número de habitantes por centro, el más alto de todos, lo cual podría indicar que las personas que acuden       van a recibir un "peor" tratamiento ya que el tratamiento se va a tener que repartir entre más pacietes y al ser peor el riesgo         de ictus va a ser mayor, sin embargo en esta población no se cumple la hipotésis planteada en la conclusión de Palencia.
+      
+      3. Salamanca es la provincia que cuenta con un mayor porcentaje de ictus por habitante, lo cual es destacable ya que no es la que       más habitantes tiene y además es la segunda que menos habitantes por centro tiene.
+
+Por lo tanto,visualmente y falta de un estudio estadístico preciso no podemos determinar si el número de centros es un factor estadísticamente significativo para el riesgo de padecer un ictus.
 
 #Ictus y sedentarismo
 
