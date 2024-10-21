@@ -15,6 +15,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
+
+```{r}
+#antes de salir
+save.image(file="objetos_actuales.Rdata")
+
+#cuando te metes
+load("OUTPUT/objetos_actuales.Rdata")
+```
+
+
+
 #Introducción
 En nuestro seminario vamos a estudiar las altas hospitalarias por ictus, en los diferentes hospitales de Castilla y León durante cuatro años, y como estas, están relacionadas con distintos factores de riesgo.
 
@@ -68,22 +79,11 @@ Este último proviene del **Instituto Nacional de Estadística (INE)**.
 #Importación de datos
 
 #Importamos los datos de las altas hospitalarias por ictus
-```{r}
-library(readr)
-altas_hospitalarias_ictus <- read_delim("INPUT/data/altas_hospitalarias_ictus.csv", 
-    delim = ";", escape_double = FALSE, trim_ws = TRUE)
-#View(altas_hospitalarias_ictus)
 
-```
 
 ```{r}
 library(rjson)
 altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
-
-altas_hospitalarias_ictus %>%
-  spread_all() %>%
-
-  #View()
 ```
 #Ictus, edad y sexo
 -Para resolver el primer objetivo vamos a:
@@ -204,110 +204,13 @@ head(resultados_combinados)
 ```
 
 
-```{r}
-cont_mujeres <- 0
-cont_hombres <- 0
-for(i in altas_hospitalarias_ictus$Sexo){
-  if(i=="Mujer"){
-    cont_mujeres <- cont_mujeres+1
-  }else if(i=="Hombre"){
-    cont_hombres <- cont_hombres+1
-  }
-}
-cat("hay un total de ", cont_mujeres, "mujeres y ", cont_hombres, "hombres\n")
-```
 
 
-  - 3 Juntar la edad con el sexo para ver la influencia de ambos factores en los ictus
+
+ - 3 Juntar la edad con el sexo para ver la influencia de ambos factores en los ictus
   
 Grupos de mujeres segun las edades
-```{r}
 
-m_0_18 <- 0
-m_19_35 <- 0
-m_36_50 <- 0
-m_51_65 <- 0
-m_mas_66 <- 0
-
-for(i in 1:nrow(altas_hospitalarias_ictus)){
-  if(altas_hospitalarias_ictus$Sexo[i] == "Mujer"){
-    e <- altas_hospitalarias_ictus$Edad[i]
-    if(e < 18){
-      m_0_18 <- m_0_18 + 1
-    } else if(e >= 19 && e <= 35){
-      m_19_35 <- m_19_35 + 1
-    } else if(e >= 36 && e <= 50){
-      m_36_50 <- m_36_50 + 1
-    } else if(e >= 51 && e <= 65){
-      m_51_65 <- m_51_65 + 1
-    } else if(e >= 66){
-      m_mas_66 <- m_mas_66 + 1
-    }
-  }
-}
-
-cat("Hay ", m_0_18, " mujeres de entre 0 y 18 años\n")
-cat("Hay ", m_19_35, " mujeres de entre 19 y 35 años\n")
-cat("Hay ", m_36_50, " mujeres de entre 36 y 50 años\n")
-cat("Hay ", m_51_65, " mujeres de entre 51 y 65 años\n")
-cat("Hay ", m_mas_66, " mujeres de más de 66 años\n")
-```
-
-Grupos de hombres segun las edades
-
-```{r}
-h_0_18 <- 0
-h_19_35 <- 0
-h_36_50 <- 0
-h_51_65 <- 0
-h_mas_66 <- 0
-
-for(i in 1:nrow(altas_hospitalarias_ictus)){
-  if(altas_hospitalarias_ictus$Sexo[i] == "Hombre"){
-    e <- altas_hospitalarias_ictus$Edad[i]
-    if(e < 18){
-      h_0_18 <- h_0_18 + 1
-    } else if(e >= 19 && e <= 35){
-      h_19_35 <- h_19_35 + 1
-    } else if(e >= 36 && e <= 50){
-      h_36_50 <- h_36_50 + 1
-    } else if(e >= 51 && e <= 65){
-      h_51_65 <- h_51_65 + 1
-    } else if(e >= 66){
-      h_mas_66 <- h_mas_66 + 1
-    }
-  }
-}
-
-cat("Hay ", h_0_18, " hombres de entre 0 y 18 años\n")
-cat("Hay ", h_19_35, " hombres de entre 19 y 35 años\n")
-cat("Hay ", h_36_50, " hombres de entre 36 y 50 años\n")
-cat("Hay ", h_51_65, " hombres de entre 51 y 65 años\n")
-cat("Hay ", h_mas_66, " hombres de más de 66 años\n")
-```
-
-  
-```{r}
-library(dplyr)
-t2 <- tibble(
-  Sexo = rep(c("Hombres", "Mujeres"), each = 5),
-  Edad = rep(c("0-18", "19-35", "36-50", "51-65", "66+"), times = 2),
-  Poblacion = c(h_0_18, h_19_35, h_36_50, h_51_65, h_mas_66, 
-                m_0_18, m_19_35, m_36_50, m_51_65, m_mas_66)
-)
-```
-
-```{r}
-
-library(ggplot2)
-library(tidyverse)
-
-ggplot(data = t2, aes(x = Edad, y = Poblacion,fill=Sexo)) + 
-  geom_bar( stat = "identity", position = "dodge",colour = "black") +
-  labs(title = "Distribución de Población por Sexo y Edad",
-       x = "Grupos de Edad", y = "Población") +
-  theme_minimal()
-```
 
 
 
@@ -325,6 +228,7 @@ Provincias <- altas_hospitalarias_ictus%>%
 source("INPUT/functions/ictus_por_provincia.R")
 ictus_por_provincia(Provincias)
 ```
+
 
 
 #Importamos los datos de la calidad del aire
@@ -355,12 +259,7 @@ exposicion_humo <- read_delim("INPUT/data/exposicion_humo.csv",
 ```
 
 #Importamos los datos de los centros de desintoxicación
-```{r}
-library(readr)
-centros_servicios_saisde <- read_delim("INPUT/data/centros_servicios_saisde.csv", 
-    delim = ";", escape_double = FALSE, trim_ws = TRUE)
-#View(centros_servicios_saisde)
-```
+
 ```{r}
 library(tidyverse)
 library(rjson)
@@ -441,10 +340,6 @@ datos <- data.frame(pob=pob_cyl_sin_ult_fila,
                     num_ictus=df)
 str(datos)
 datos$pob.provincia
-
-
-reg_mul <- lm(num_ictus.numero_ictus ~ pob.provincia + centros.n, data = datos)
-summary(reg_mul)
 
 ```
 
