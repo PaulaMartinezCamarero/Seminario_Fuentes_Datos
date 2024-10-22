@@ -200,6 +200,12 @@ anova_resultado <- aov(edades_total$Edad~ sexototal$Sexo, data = altas_hospitala
 # Resumen del ANOVA
 summary(anova_resultado)
 ```
+Análisis estadístico:
+Tomamos como Test Hipótesis:
+  H0: Medias iguales --> p-valor>0.05
+  H1: Medias distintas -->p-valor<0.05
+Tras realizar el anova(analisis de la varianza) con la edad como variable numérica y el sexo como variable categórica vemos que el p-valor es muy bajo rechazamos la H0, lo que nos indica que el sexo es un factor estadisticamente significativo para los ictus.
+
 
 
 
