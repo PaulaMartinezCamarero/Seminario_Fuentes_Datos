@@ -260,7 +260,31 @@ ictus_por_provincia(Provincias$Provincia)
 ```{r}
 calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
 #View(calidad_aire)
+calidad_aire
 ```
+
+
+Por lo leído y descrito en uno de los artículos, niveles altos de NO el día de ingreso conlleva a mas riesgo de mortalidad, al ser nuestros datos de altas hospitalarias por ictus y no de muertes, lo que vamos a intentar ver es si los días que hay un mayor número de ingresos coinciden con niveles altos de NO.
+
+```{r}
+media_NO_por_provincia <- calidad_aire %>%
+  group_by(Provincia) %>%
+  summarise(media_NO = round(mean(`NO (ug/m3)`, na.rm = TRUE), 2))
+
+
+media_NO_por_provincia
+
+```
+```{r}
+grafica_aire <- media_NO_por_provincia%>%
+  ggplot(mapping=aes(x=Provincia, y=media_NO))+
+  geom_bar(stat = "identity",fill="pink")+
+  labs(x="Provincias",y= "Media de NO")
+
+grafica_aire
+```
+
+
 
 #Importamos los datos de sedentarismo
 
