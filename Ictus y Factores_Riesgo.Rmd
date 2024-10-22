@@ -147,11 +147,17 @@ regresion_edad_ictus <- lm(Conteo~poly(Edad,3),data=resultados_edad)
 summary(regresion_edad_ictus)
 ```
 
+Hemos decidido realizar una regresión polinómica ya que una lineal no se ajusta exactamente lo que queremos y nos daba un R^2 muy bajo, en cambio la polinómica nos da un R^2 de 0.7994 lo cual nos indica que no es un mal modelo. Esto sucede porque en la regresión lineal debe crecer linealmente hasta el infinito pero a ciertas edades es biologicamente imposible que aumente ya que los humanos tenemos una vida limitada.
+En los resultados del modelor polinomial vemos que la edad es un factor estadísticamente siginificativo.
+
+Gráfico que explica el modelo
 ```{r}
 ggplot(data=resultados_edad, aes(x=Edad,y=Conteo))+
   geom_point()+
   geom_smooth()
 ```
+Se ve claramente como a edades bajas el número deictus es muy reducido pero a partir de la barrera de los 45-50 empieza a subir drásticamente hasta los 75-88 que empieza a disminuir ya que a estas edades comienza a disminuir la tasa de supervivencia ya que las personas fallecen por otras patologías o por causas naturales.
+
 
   - 2 Obtener el número de hombres y mujeres para ver si el sexo influye en la cantidad de ictus
 
