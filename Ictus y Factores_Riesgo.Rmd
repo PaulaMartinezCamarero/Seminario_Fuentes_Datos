@@ -25,6 +25,15 @@ load("OUTPUT/objetos_actuales.Rdata")
 
 ```
 
+Importamos las librerías necesarias:
+```{r}
+library(tidyjson)
+library(rjson)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(readr)
+```
 
 
 #Introducción
@@ -86,9 +95,12 @@ Este último proviene del **Instituto Nacional de Estadística (INE)**.
 library(rjson)
 altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
 ```
+
 #Ictus, edad y sexo
 -Para resolver el primer objetivo vamos a:
-  - 1 Obtener las edades de todos los pacientes para ver si la edad es un factor                 determinante en el aumento de los ictus.
+  - 1 Obtener las edades de todos los pacientes para ver si la edad es un factor determinante en el aumento de los ictus.
+  
+  Para ello necesitamos conocer como está organizado nuestro json.
 ```{r}
 altas_hospitalarias_ictus %>%
   spread_all() %>%
@@ -106,13 +118,9 @@ altas_hospitalarias_ictus %>%
   json_types%>%
   count(name, type)
 ```
-Calculamos conteo por edad
 
+Calculamos conteo por edad:
 ```{r}
-library(tidyverse)
-library(rjson)
-library(tidyjson)
-
 edades_total <- altas_hospitalarias_ictus %>%
   spread_all %>%               
   enter_object("fields") %>%     
@@ -124,7 +132,7 @@ edades_total <- altas_hospitalarias_ictus %>%
 ```
  
  
- 
+Importamos función que cuenta el total para cada una de las edades:
 ```{r}
 #edades_total$Edad
 source("INPUT/functions/total_por_edad.R")
@@ -133,6 +141,7 @@ print(resultados_edad)
 
 ```
 
+Realizamos una regresión polinómica:
 ```{r}
 regresion_edad_ictus <- lm(Conteo~poly(Edad,3),data=resultados_edad)
 summary(regresion_edad_ictus)
@@ -144,15 +153,11 @@ ggplot(data=resultados_edad, aes(x=Edad,y=Conteo))+
   geom_smooth()
 ```
 
-  - 2 Obtener el numero de hombres y mujeres para ver si el sexo influye en la cantidad de        ictus
+  - 2 Obtener el número de hombres y mujeres para ver si el sexo influye en la cantidad de ictus
 
-conteo por sexo
+Conteo por sexo:
 
 ```{r}
-library(tidyverse)
-library(rjson)
-library(tidyjson)
-
 sexototal <- altas_hospitalarias_ictus %>%
   spread_all %>%               
   enter_object("fields") %>%     
@@ -164,6 +169,7 @@ total_sexo <- sexototal$Sexo
 #total_sexo
 ```
 
+Llamamos a la función que nos cuenta el número de hombres y de mujeres que han sufrido un ictus:
 ```{r}
 source("INPUT/functions/total_por_sexo.R")
 resultados_sexo <- total_por_sexo(total_sexo)
@@ -172,17 +178,19 @@ print(resultados_sexo)
 
 ```
 
+Mostramos de manera visual la cantidad de hombres y mujeres:
 ```{r}
-regresion_sexo_ictus <- lm(Conteo~Sexo,data=resultados_sexo)
-summary(regresion_sexo_ictus)
+grafica_sexo <-  resultados_sexo%>%
+  ggplot(mapping=aes(x=Sexo, y=Conteo))+
+  geom_bar(stat="identity", fill="gold")+
+  labs(x="Sexo",y="Numero de ictus")
+  
+grafica_sexo
+  
 ```
-```{r}
-#ggplot(data=resultados_sexo, aes(x=Sexo,y=Conteo))+
-  #geom_point()+
-  #geom_smooth()
-```
-ANOVA
 
+Realizamos un ANOVA:
+Para ello necesitamos conocer la media de la edad y su desviación estandar.
 ```{r}
 media_desviacion <- altas_hospitalarias_ictus %>%
   spread_all %>%               
@@ -197,9 +205,9 @@ media_desviacion <- altas_hospitalarias_ictus %>%
 media_desviacion
 anova_resultado <- aov(edades_total$Edad~ sexototal$Sexo, data = altas_hospitalarias_ictus)
 
-# Resumen del ANOVA
 summary(anova_resultado)
 ```
+
 Análisis estadístico:
 Tomamos como Test Hipótesis:
   H0: Medias iguales --> p-valor>0.05
@@ -209,7 +217,7 @@ Tras realizar el anova(analisis de la varianza) con la edad como variable numér
 
 
 
-Relacionamos la edad con el sexo
+- 4 Intentamos juntar sexo y edad (A LO MEJOR LO QUITAMOS)
 
 ```{r}
 str(resultados_edad)
@@ -221,19 +229,9 @@ resultados_combinados
 ```
 
 
-
-
-
- - 3 Juntar la edad con el sexo para ver la influencia de ambos factores en los ictus
-  
-Grupos de mujeres segun las edades
-
-
-
-
-  - 4 Obtener el numero de casos por provincias para empezar a relacionarlo con los            siguientes objetivos
-  
+Obtener el número de casos por provincias para empezar a relacionarlo con los siguientes objetivos
 ```{r}
+
 Provincias <- altas_hospitalarias_ictus%>%
   spread_all()%>%
   enter_object(fields)%>%
@@ -244,6 +242,7 @@ Provincias
 
 ```
 
+Importamos la función que cuenta el número de ictus por provincia:
 ```{r}
 source("INPUT/functions/ictus_por_provincia.R")
 ictus_por_provincia(Provincias$Provincia)
@@ -253,7 +252,6 @@ ictus_por_provincia(Provincias$Provincia)
 
 #Importamos los datos de la calidad del aire
 ```{r}
-library(readr)
 calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
 #View(calidad_aire)
 ```
@@ -261,8 +259,6 @@ calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
 #Importamos los datos de sedentarismo
 
 ```{r} 
-
-library(readr)
 sedentarismo <- read_delim("INPUT/data/sedentarismo.csv", 
     delim = ";", escape_double = FALSE, na = "No consta", 
     trim_ws = TRUE)
@@ -272,21 +268,24 @@ sedentarismo <- read_delim("INPUT/data/sedentarismo.csv",
 
 #Importamos los datos exposición al humo
 ```{r}
-library(readr)
 exposicion_humo <- read_delim("INPUT/data/exposicion_humo.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
 #View(exposicion_humo)
 ```
 
+
+
+
 #Importamos los datos de los centros de desintoxicación
+Visionamos los datos y vemos que con hacer un spread_all podemos obtener lo que necesitamos para nuestro trabajo.
+```{r}
+centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde.json")
+spread_all(centros_servicios_saisde)
+
+```
+
 
 ```{r}
-library(tidyverse)
-library(rjson)
-centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde.json")
-#centros_servicios_saisde
-#head(centros_servicios_saisde)
-library(tidyjson)
 Centros<- centros_servicios_saisde %>%
   spread_all() %>%
   count(provincia = fields.provincia)
@@ -297,23 +296,8 @@ print(Centros)
 ordenadas <- arrange(Centros,Centros$provincia)
 ordenadas
 
-#View() ya tenemos los datos que queremos asiq no nos metemos mas adentro
   
 ```
-
-
-
-
-Probamos a hacer las linea 854 y 861 luego
-
-
-
-
-
-
-
-
-
 
 #Importamos función que imprime los habitantes de castilla y león por provincias
 ```{r}
@@ -321,7 +305,8 @@ source("INPUT/functions/poblacion_cyl.R")
 poblacion_cyl
 str(poblacion_cyl)
 ```
-Para tener una referencia entre los centros de desintoxicación por provincia con el número de habitantes de esa provincia calcularemos cuál es el número de habitantes por centro; Con el obetivo de ver realmente si hay más ictus en aquellas provincias donde el número de habitantes por centro es menor y la el consumo de drogas es un factor significativo en los ictus o por el contrario no lo es.
+
+Para tener una referencia entre los centros de desintoxicación por provincia con el número de habitantes de esa provincia calcularemos cuál es el número de habitantes por centro; con el obetivo de ver realmente si hay más ictus en aquellas provincias donde el número de habitantes por centro es menor y el consumo de drogas es un factor significativo en los ictus o por el contrario no lo es.
 
 
 ```{r}
@@ -342,26 +327,18 @@ print(resultado)
 Lo lógico es esperar que en las provincias que cuentan con un menor número de habitantes, haya menor número de ictus y menor número de centros de desintoxicación.
 
 ```{r}
-
-#Daba un error de que ictus_por_provincia_ictus no podia ponerse en la regresión multiple porque era una función, por lo que lo he convertido en dataframe
 numero_ictus <- ictus_por_provincia(Provincias)
 df <- as.data.frame(numero_ictus)
 df$prov <-c("Avila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora")
 
 
-#rownames(df)=c
-
-#Y ahora da otro error porque dice que hay un numero diferente de filas, esto es porque en poblacion_cyl aparece tb la población total de cyl, para que desaparezca el error debemos quitar la ultima fila.
-
-pob_lo_que_quiero <- poblacion_cyl%>%
+pob_prov_y_total <- poblacion_cyl%>%
   select(provincia, Poblacion_total)
-pob_lo_que_quiero
+pob_prov_y_total 
 
-pob_cyl_sin_ult_fila <- pob_lo_que_quiero[1:9,]
+pob_cyl_sin_ult_fila <- pob_prov_y_total [1:9,]
 pob_cyl_sin_ult_fila
-str(pob_cyl_sin_ult_fila)
-#libpob_cyl_sin_ult_fila#library("dplyr")
-#Centros
+
 arrange(.data=ordenadas,(ordenadas$provincia))
 
 datos <- data.frame(pob=pob_cyl_sin_ult_fila,
@@ -374,11 +351,8 @@ datos
 
 ```
 
+Gráfica de barras en la que se representa el número de ictus en cada provincia, coloreando de un color más fuerte las barras con los más centros de desintoxicación.
 ```{r}
-library(tidyverse)
-library(ggplot2)
-
-
 grafica <- datos %>%
   ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus.numero_ictus), y = num_ictus.numero_ictus)) +
   geom_bar(stat = "identity", aes(fill = centros.n)) +
@@ -393,9 +367,8 @@ grafica
 ```
 
 
-Gráfica en la que aparece representado el número de centros por se compara el número de centros por provincia con el número de ictus en esas mismas provincias:
+Gráfica en la que aparece representado el número de centros por provincia:
 ```{r}
-library(ggplot2)
 grafica2 <- datos%>%
    ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus.numero_ictus), y = centros.n)) +
   geom_bar(stat = "identity",fill="blue") +
@@ -415,7 +388,7 @@ resultado
 resultado_sin_ult_fila=resultado[1:9,]
 str(resultado_sin_ult_fila)
 
-library(ggplot2)
+
 grafica3 <-
   ggplot(mapping = aes(x = reorder(datos$pob.provincia, datos$num_ictus.numero_ictus), y = resultado_sin_ult_fila$hab_centro)) +
   geom_bar(stat = "identity", fill = "green") +
@@ -426,6 +399,8 @@ grafica3 <-
 grafica3
 
 ```
+
+Obtenemos una tabla que nos permite visualizar de manera numérica toda la información estudiada anteriormente:
 ```{r}
 library(dplyr)
 tabla_centros <- tibble(Provincia=datos$pob.provincia,
