@@ -295,6 +295,21 @@ sedentarismo <- read_delim("INPUT/data/sedentarismo.csv",
 #View(sedentarismo)
 ```
 
+```{r}
+install.packages("pxR")
+library("pxR")
+sedentarismo_px <- read.px("INPUT/data/sedentarismo.px")
+sedentarismo <- as.data.frame(sedentarismo_px)
+sedentarismo
+
+```
+#Importamos los datos de consumo de fruta, verduras, ensaladas y hortalizas.
+```{r}
+frutas_px <- read.px("INPUT/data/consumo_fruta_y_verdura.px")
+frutas <- as.data.frame(frutas_px)
+frutas
+```
+
 
 #Importamos los datos exposición al humo
 ```{r}

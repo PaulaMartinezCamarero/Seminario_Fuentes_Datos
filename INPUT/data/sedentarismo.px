@@ -1,0 +1,21 @@
+AXIS-VERSION="2006";
+CREATION-DATE="20240513";
+CHARSET="ANSI";
+SUBJECT-AREA="Salud";
+SUBJECT-CODE="04";
+MATRIX="D6G6";
+TITLE="Población sedentaria por grupos de edad. 2020.";
+CONTENTS="Población sedentaria";
+CODEPAGE="iso-8859-15";
+DESCRIPTION="";
+COPYRIGHT=YES;
+DECIMALS=1;
+SHOWDECIMALS=1;
+STUB="Grupos de edad";
+HEADING="Sexo";
+VALUES("Grupos de edad")="Total","De 15 a 24 años","De 25 a 34 años","De 35 a 44 años","De 45 a 54 años",
+"De 55 a 64 años","De 65 a 74 años","De 75 a 84 años","De 85 y más años";
+VALUES("Sexo")="Hombres","Mujeres";
+SOURCE="Encuesta Europea de Salud en España 2020. INE-MSCBS";
+UNITS="porcentaje";
+DATA=32.3 40.3 17.9 31.9 26.1 39.2 32.2 39.0 35.0 36.5 35.9 35.6 33.1 39.2 43.2 55.4 60.2 79.0;
