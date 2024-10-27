@@ -289,9 +289,11 @@ grafica_aire
 #Importamos los datos de sedentarismo
 
 ```{r} 
+
 sedentarismo <- read_delim("INPUT/data/sedentarismo.csv", 
     delim = ";", escape_double = FALSE, na = "No consta", 
     trim_ws = TRUE)
+
 #View(sedentarismo)
 ```
 
@@ -310,12 +312,31 @@ frutas <- as.data.frame(frutas_px)
 frutas
 ```
 
+value nos da el porcentaje de gente que si consume lo indicado en tipo de alimento.
+```{r}
+source("INPUT/functions/ictus_por_provincia.R")
+ictus_por_provincia(Provincias) #calcularemos el porcentaje que supone de la población total
+source("INPUT/functions/divide.R")
+source("INPUT/functions/poblacion_cyl.R")
+
+porcentaje_ictus_provincia <- divide(ictus_por_provincia(Provincias),poblacion_cyl$Poblacion_total[1:9])*100
+porcentaje_ictus_provincia
+porcentaje_sin_ictus_provincia <-100-porcentaje_ictus_provincia
+porcentaje_sin_ictus_provincia
+```
+```{r}
+
+```
+
 
 #Importamos los datos exposición al humo
 ```{r}
 exposicion_humo <- read_delim("INPUT/data/exposicion_humo.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
 #View(exposicion_humo)
+```
+```{r}
+exposicion_humo
 ```
 
 
