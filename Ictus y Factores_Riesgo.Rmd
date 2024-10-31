@@ -275,29 +275,56 @@ calidad_aire
 ```
 Calculamos la media de los factores más destacados del aire, agrupados por fecha y provincia.
 ```{r}
-source("INPUT/functions/media_factores_aire.R")
+media_factores_aire <-calidad_aire%>%
+    rename(provincia=Provincia)%>%
+    group_by(Fecha, provincia)%>%
+    summarise(
+      NO=mean(`NO (ug/m3)`, na.rm = TRUE),
+      O3=mean(`O3 (ug/m3)`, na.rm = TRUE),
+      PM25=mean(`PM25 (ug/m3)`, na.rm = TRUE)
+      
+    )%>%
+    arrange(Fecha)
+  
+media_factores_aire
 
-
-media_factores_aire(calidad_aire)
 
 ```
+
+```{r}
+
+library(lubridate)
+library(dplyr)
+
+
+altas_hosp_ictus_fecha_bien <- altas_hosp_ictus_tab %>%
+  mutate(Fecha = format(ymd_hms(fields.fecha_de_ingreso), "%m/%Y"))
+
+
+altas_hosp_ictus_fecha_bien
+altas_hosp_ictus_fecha_bien$provincia <- ifelse(altas_hosp_ictus_fecha_bien$provincia == "Ávila", "Avila",altas_hosp_ictus_fecha_bien$provincia)
+
+```
+
+```{r}
+aire_con_ictus <- full_join(altas_hosp_ictus_fecha_bien, media_factores_aire, by = c("Fecha", "provincia"))
+
+aire_con_ictus%>%
+  rename(ambito=fields.ambito_de_procedencia,dia_semana=fields.dia_de_la_semana_en_la_fecha_del_ingreso)%>%
+  select(ambito,edad,sexo,dia_semana,provincia,Fecha,NO,O3,PM25)
+
+
+```
+
+
+
 
 Por lo leído y descrito en uno de los artículos, niveles altos de NO el día de ingreso conlleva a mas riesgo de mortalidad, al ser nuestros datos de altas hospitalarias por ictus y no de muertes, lo que vamos a intentar ver es si los días que hay un mayor número de ingresos coinciden con niveles altos de NO.
 
-```{r}
-media_NO_por_provincia <- calidad_aire %>%
-  group_by(Fecha,Provincia) %>%
-  summarise(media_NO = mean(`NO (ug/m3)`, na.rm = TRUE),
-            media_03 =mean(`O3 (ug/m3)`, na.rm = TRUE),
-            media_PM25=mean(`PM25 (ug/m3)`, na.rm = TRUE))
-
-media_NO_por_provincia
-
-```
 
 ```{r}
-grafica_aire <- media_NO_por_provincia%>%
-  ggplot(mapping=aes(x=Provincia, y=media_NO))+
+grafica_aire <- media_factores_aire%>%
+  ggplot(mapping=aes(x=provincia, y=NO))+
   geom_bar(stat = "identity",fill="pink")+
   labs(x="Provincias",y= "Media de NO")
 
