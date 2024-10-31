@@ -118,6 +118,15 @@ altas_hospitalarias_ictus %>%
   json_types%>%
   count(name, type)
 ```
+Dejamos la tabla entera tabulada
+```{r}
+altas_hosp_ictus_tab <- altas_hospitalarias_ictus%>%
+  spread_all()%>%
+  enter_object("fields")%>%
+  spread_all()
+altas_hosp_ictus_tab
+```
+
 
 Calculamos conteo por edad:
 ```{r}
@@ -261,15 +270,16 @@ ictus_por_provincia(Provincias$Provincia)
 ```{r}
 calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
 #View(calidad_aire)
-octubre <- calidad_aire$`NO (ug/m3)`[calidad_aire$Fecha=="10/2019"]
-media_no_octubre=mean(octubre, na.rm = TRUE)
-media_no_octubre
-
-source("INPUT/functions/aire_NO.R")
-aire_NO(calidad_aire)
 
 ```
+Calculamos la media de los factores más destacados del aire, agrupados por fecha y provincia.
+```{r}
+source("INPUT/functions/media_factores_aire.R")
 
+
+media_facotres_aire(calidad_aire)
+
+```
 
 Por lo leído y descrito en uno de los artículos, niveles altos de NO el día de ingreso conlleva a mas riesgo de mortalidad, al ser nuestros datos de altas hospitalarias por ictus y no de muertes, lo que vamos a intentar ver es si los días que hay un mayor número de ingresos coinciden con niveles altos de NO.
 
