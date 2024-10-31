@@ -313,10 +313,119 @@ aire_con_ictus%>%
   rename(ambito=fields.ambito_de_procedencia,dia_semana=fields.dia_de_la_semana_en_la_fecha_del_ingreso)%>%
   select(ambito,edad,sexo,dia_semana,provincia,Fecha,NO,O3,PM25)
 
+```
 
+Añado en la tabla anterior una columna en la que aparece el número de ictus en cada provincia, para así poder hacer las gráficas
+```{r}
+ictus_por_provincia <- data.frame(provincia=c("Avila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora"),
+                                  numero_ictus=c(1178,2788,3513,1064,3743,1142,601,4575,1486))
+ictus_por_provincia
+aire_con_num_ictus <- full_join(aire_con_ictus, ictus_por_provincia, "provincia")
+aire_con_num_ictus
 ```
 
 
+
+
+```{r}
+g_ictus_prov_gas_NO <- aire_con_num_ictus %>%
+  distinct(provincia, .keep_all = TRUE) %>%  
+  ggplot(aes(x = reorder(provincia, numero_ictus), y = numero_ictus)) + 
+  geom_bar(stat = "identity", aes(fill = NO)) +
+  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  labs(x = "", y = "Número ictus", fill = "Media de gas") +
+  theme_classic()
+
+g_ictus_prov_gas_NO
+```
+En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de NO, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
+
+
+```{r}
+g_ictus_prov_gas_PM25 <- aire_con_num_ictus %>%
+  distinct(provincia, .keep_all = TRUE) %>%  
+  ggplot(aes(x = reorder(provincia, numero_ictus), y = numero_ictus)) + 
+  geom_bar(stat = "identity", aes(fill = PM25)) +
+  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  labs(x = "", y = "Número ictus", fill = "Media de gas") +
+  theme_classic()
+
+g_ictus_prov_gas_PM25
+```
+En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de PM25, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
+
+```{r}
+g_ictus_prov_gas_O3 <- aire_con_num_ictus %>%
+  distinct(provincia, .keep_all = TRUE) %>% 
+  ggplot(aes(x = reorder(provincia, numero_ictus), y = numero_ictus)) + 
+  geom_bar(stat = "identity", aes(fill = O3)) +
+  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  labs(x = "", y = "Número ictus", fill = "Media de gas") +
+  theme_classic()
+
+g_ictus_prov_gas_O3
+```
+En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de O3, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
+
+
+
+He tenido que buscar información sobre como hacer que se puedan usar 3 columnas para una mismas provincia:
+https://www.geeksforgeeks.org/pivot-longer-in-r/
+https://r-charts.com/es/ggplot2/facetas/
+https://rpubs.com/Edimer/689875
+
+```{r}
+
+aire_con_num_ictus_long <- aire_con_num_ictus %>%
+  distinct(provincia, numero_ictus, NO, PM25, O3) %>%
+  pivot_longer(cols = c(NO, PM25, O3), 
+               names_to = "gas", 
+               values_to = "concentracion_gas")
+
+grafica_conc_gases_por_prov_num_ictus <- ggplot(aire_con_num_ictus_long, 
+                                                 aes(x = provincia, 
+                                                     y = numero_ictus, 
+                                                     fill = concentracion_gas)) + 
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8)) + # Separar las barras
+  scale_fill_gradient(low = "pink", high = "violet") + 
+  labs(x = "Provincias", y = "Número de ictus",fill="Concentración de gas") +
+  facet_wrap(~ gas, scales = "free_y") + 
+  theme_classic() 
+
+
+grafica_conc_gases_por_prov_num_ictus
+
+
+
+```
+
+En esta imagen, aparecen 3 gráficas, en las que se muestran el número de ictus en cada provincia y la concentración de cada gas (NO, O3 y PM25) de un color más oscuro cuando es mayor y de un color más claro cuando es menor.
+Resumidamente, son las tres gráficas anteriores juntadas en una para una visualización más clara.
+
+Como dato curioso, queremos ver si el día de la semana está relacionado con los ictus
+```{r}
+grafica_dias_semana_ingreso <- aire_con_num_ictus %>%
+  distinct(provincia, .keep_all = TRUE) %>%  
+  ggplot(mapping=aes(x = dia_de_la_semana_en_la_fecha_del_ingreso, y = numero_ictus)) + 
+  geom_bar(stat = "identity", fill="purple") +
+  labs(x = "Días de la semana", y="Número de ictus") +
+  theme_classic()
+
+grafica_dias_semana_ingreso
+
+```
+
+Ahora vamos a ver también como dato curioso el día de alta hospitalaria:
+```{r}
+grafica_dias_semana_alta <- aire_con_num_ictus %>%
+  distinct(provincia, .keep_all = TRUE) %>%  
+  ggplot(mapping=aes(x = dia_de_la_semana_en_la_fecha_del_alta, y = numero_ictus)) + 
+  geom_bar(stat = "identity", fill="purple") +
+  labs(x = "Días de la semana", y="Número de ictus") +
+  theme_classic()
+
+grafica_dias_semana_alta
+```
 
 
 Por lo leído y descrito en uno de los artículos, niveles altos de NO el día de ingreso conlleva a mas riesgo de mortalidad, al ser nuestros datos de altas hospitalarias por ictus y no de muertes, lo que vamos a intentar ver es si los días que hay un mayor número de ingresos coinciden con niveles altos de NO.
@@ -371,6 +480,7 @@ porcentaje_ictus_provincia
 porcentaje_sin_ictus_provincia <-100-porcentaje_ictus_provincia
 porcentaje_sin_ictus_provincia
 ```
+
 ```{r}
 
 
