@@ -128,6 +128,7 @@ edades_total <- altas_hospitalarias_ictus %>%
   #con gather_object nos muestra 220,888 resultados
   rename(Edad = edad) %>%         
   select(Edad)
+edades_total
 
 ```
  
@@ -260,7 +261,13 @@ ictus_por_provincia(Provincias$Provincia)
 ```{r}
 calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
 #View(calidad_aire)
-calidad_aire
+octubre <- calidad_aire$`NO (ug/m3)`[calidad_aire$Fecha=="10/2019"]
+media_no_octubre=mean(octubre, na.rm = TRUE)
+media_no_octubre
+
+source("INPUT/functions/aire_NO.R")
+aire_NO(calidad_aire)
+
 ```
 
 
@@ -275,6 +282,7 @@ media_NO_por_provincia <- calidad_aire %>%
 media_NO_por_provincia
 
 ```
+
 ```{r}
 grafica_aire <- media_NO_por_provincia%>%
   ggplot(mapping=aes(x=Provincia, y=media_NO))+
