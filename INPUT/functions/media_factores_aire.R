@@ -1,4 +1,4 @@
-media_facotres_aire <- function(calidad_aire){
+media_factores_aire <- function(calidad_aire){
   calidad_aire%>%
     group_by(Fecha, Provincia)%>%
     summarise(

@@ -269,6 +269,7 @@ ictus_por_provincia(Provincias$Provincia)
 #Importamos los datos de la calidad del aire
 ```{r}
 calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
+calidad_aire
 #View(calidad_aire)
 
 ```
@@ -277,7 +278,7 @@ Calculamos la media de los factores más destacados del aire, agrupados por fech
 source("INPUT/functions/media_factores_aire.R")
 
 
-media_facotres_aire(calidad_aire)
+media_factores_aire(calidad_aire)
 
 ```
 
@@ -285,9 +286,10 @@ Por lo leído y descrito en uno de los artículos, niveles altos de NO el día d
 
 ```{r}
 media_NO_por_provincia <- calidad_aire %>%
-  group_by(Provincia) %>%
-  summarise(media_NO = round(mean(`NO (ug/m3)`, na.rm = TRUE), 2))
-
+  group_by(Fecha,Provincia) %>%
+  summarise(media_NO = mean(`NO (ug/m3)`, na.rm = TRUE),
+            media_03 =mean(`O3 (ug/m3)`, na.rm = TRUE),
+            media_PM25=mean(`PM25 (ug/m3)`, na.rm = TRUE))
 
 media_NO_por_provincia
 
