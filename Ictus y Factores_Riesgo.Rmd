@@ -337,6 +337,10 @@ calucla_media_sustancias_por_provincia_y_meses
 
   
 ```
+
+Estudios confirman que "Niveles más elevados de NO el día de ingreso conlleva un aumento del riesgo de mortalidad debido a ictus"
+El gráfico que se muestra a continuación nos sirve para ver si cuando la concentración de NO es mayor hay un mayor número de ictus.
+
 Grafico de dispersión del NO:
 ```{r}
 grafica_dispersion_num_ictus_prov_NO <- calucla_media_sustancias_por_provincia_y_meses%>%
@@ -346,6 +350,11 @@ grafica_dispersion_num_ictus_prov_NO <- calucla_media_sustancias_por_provincia_y
 grafica_dispersion_num_ictus_prov_NO
 
 ```
+El ozono es uno de los principales contaminantes del aire.
+Tal y como afirma el profesor Shaowei Wu, de la universidad Xi´an Jiaotong (China): "estudios previos han sugerido que la contaminación por ozono daña el corazón y los vasos sanguíneos".
+
+Por ello vamos a realizar un gráfico de dispersión en el que veamos como varía el número de ictus dependiendo de como sea la media de O3 en cada provincia.
+
 Grafico de dispersión del 03:
 ```{r}
 grafica_dispersion_num_ictus_prov_O3 <- calucla_media_sustancias_por_provincia_y_meses%>%
@@ -354,6 +363,11 @@ grafica_dispersion_num_ictus_prov_O3 <- calucla_media_sustancias_por_provincia_y
   geom_smooth(method = "lm", aes(colour = factor(provincia)))
 grafica_dispersion_num_ictus_prov_O3
 ```
+
+La mortalidad cardiovascular y también las hospitalización aumentan en un día determinado entre un 0,5% y un 1% por cada aumento de 10 mg/m3 de PM2.5.
+Por ello vamos a realizar un gráfico de dispersión para ver si cuando los niveles de PM2.5 son más elevados hay mayor número de ictus.
+
+
 Grafico de dispersión del PM25:
 ```{r}
 grafica_dispersion_num_ictus_prov_PM25 <- calucla_media_sustancias_por_provincia_y_meses%>%
