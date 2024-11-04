@@ -298,7 +298,8 @@ library(dplyr)
 
 
 altas_hosp_ictus_fecha_bien <- altas_hosp_ictus_tab %>%
-  mutate(Fecha = format(ymd_hms(fields.fecha_de_ingreso), "%m/%Y"))
+  mutate(Fecha = ymd_hms(fields.fecha_de_ingreso))%>%
+  mutate(mes= rbind(month(fields.fecha_de_ingreso)))
 
 
 altas_hosp_ictus_fecha_bien
@@ -309,7 +310,7 @@ altas_hosp_ictus_fecha_bien$provincia <- ifelse(altas_hosp_ictus_fecha_bien$prov
 ```{r}
 aire_con_ictus <- full_join(altas_hosp_ictus_fecha_bien, media_factores_aire, by = c("Fecha", "provincia"))
 
-aire_con_ictus%>%
+aire_con_ictus_resumen <- aire_con_ictus%>%
   rename(ambito=fields.ambito_de_procedencia,dia_semana=fields.dia_de_la_semana_en_la_fecha_del_ingreso)%>%
   select(ambito,edad,sexo,dia_semana,provincia,Fecha,NO,O3,PM25)
 
@@ -320,10 +321,16 @@ Añado en la tabla anterior una columna en la que aparece el número de ictus en
 ictus_por_provincia <- data.frame(provincia=c("Avila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora"),
                                   numero_ictus=c(1178,2788,3513,1064,3743,1142,601,4575,1486))
 ictus_por_provincia
-aire_con_num_ictus <- full_join(aire_con_ictus, ictus_por_provincia, "provincia")
+aire_con_num_ictus <- full_join(aire_con_ictus_resumen, ictus_por_provincia, "provincia")
 aire_con_num_ictus
 ```
 
+```{r}
+?geom_smooth
+grafica_puntos_NO <- ggplot(aire_con_num_ictus, aes(x=NO,y=numero_ictus))+
+  geom_point(colour="red")
+grafica_puntos_NO
+```
 
 
 
