@@ -275,16 +275,21 @@ calidad_aire
 ```
 Calculamos la media de los factores más destacados del aire, agrupados por fecha y provincia.
 ```{r}
+library(lubridate)
+
 media_factores_aire <-calidad_aire%>%
     rename(provincia=Provincia)%>%
-    group_by(Fecha, provincia)%>%
+    mutate(Fechas = my(Fecha))%>%
+    mutate(mes= month(Fechas))%>%
+    mutate(anyo= year(Fechas))%>%
+    group_by(Fechas, provincia,mes,anyo)%>%
     summarise(
       NO=mean(`NO (ug/m3)`, na.rm = TRUE),
       O3=mean(`O3 (ug/m3)`, na.rm = TRUE),
       PM25=mean(`PM25 (ug/m3)`, na.rm = TRUE)
       
     )%>%
-    arrange(Fecha)
+    arrange(Fechas)
   
 media_factores_aire
 
@@ -296,25 +301,43 @@ media_factores_aire
 library(lubridate)
 library(dplyr)
 
-
+#para poder hacer el estudio de manera correcta de la calidad del aire
 altas_hosp_ictus_fecha_bien <- altas_hosp_ictus_tab %>%
   mutate(Fecha = ymd_hms(fields.fecha_de_ingreso))%>%
-  mutate(mes= rbind(month(fields.fecha_de_ingreso)))
+  mutate(mes= month(fields.fecha_de_ingreso))%>%
+  mutate(anyo = year(fields.fecha_de_ingreso))
 
-
-altas_hosp_ictus_fecha_bien
 altas_hosp_ictus_fecha_bien$provincia <- ifelse(altas_hosp_ictus_fecha_bien$provincia == "Ávila", "Avila",altas_hosp_ictus_fecha_bien$provincia)
+altas_hosp_ictus_fecha_bien
+
 
 ```
 
 ```{r}
-aire_con_ictus <- full_join(altas_hosp_ictus_fecha_bien, media_factores_aire, by = c("Fecha", "provincia"))
-
+aire_con_ictus <- full_join(altas_hosp_ictus_fecha_bien, media_factores_aire, by = c("mes","anyo", "provincia"))
+#aire_con_ictus_tab <- aire_con_ictus%>%
+  
 aire_con_ictus_resumen <- aire_con_ictus%>%
   rename(ambito=fields.ambito_de_procedencia,dia_semana=fields.dia_de_la_semana_en_la_fecha_del_ingreso)%>%
-  select(ambito,edad,sexo,dia_semana,provincia,Fecha,NO,O3,PM25)
-
+  select(Fechas,mes,anyo,edad,sexo,dia_semana,provincia,NO,O3,PM25,ambito)
+aire_con_ictus_resumen
 ```
+```{r}
+
+calucla_media_sustancias_por_provincia_y_meses <-aire_con_ictus_resumen %>%
+  filter(anyo %in% c(2019, 2020, 2021, 2022, 2023)) %>%  
+  group_by(provincia, anyo, mes) %>%  
+  summarize(num_ictus=n(),
+            avg_NO = mean(NO, na.rm = TRUE),
+            avg_O3=mean(O3, na.rm = TRUE),
+            avg_PM25=mean(PM25, na.rm = TRUE)) 
+calucla_media_sustancias_por_provincia_y_meses
+
+
+
+  
+```
+
 
 Añado en la tabla anterior una columna en la que aparece el número de ictus en cada provincia, para así poder hacer las gráficas
 ```{r}
@@ -322,14 +345,15 @@ ictus_por_provincia <- data.frame(provincia=c("Avila","Burgos","León","Palencia
                                   numero_ictus=c(1178,2788,3513,1064,3743,1142,601,4575,1486))
 ictus_por_provincia
 aire_con_num_ictus <- full_join(aire_con_ictus_resumen, ictus_por_provincia, "provincia")
-aire_con_num_ictus
+#aire_con_num_ictus
 ```
 
 ```{r}
 ?geom_smooth
-grafica_puntos_NO <- ggplot(aire_con_num_ictus, aes(x=NO,y=numero_ictus))+
+grafica_puntos_NO <- ggplot(calucla_media_sustancias_por_provincia_y_meses, aes(x=avg_NO,y=num_ictus))+
   geom_point(colour="red")
-grafica_puntos_NO
+
+
 ```
 
 
