@@ -325,7 +325,6 @@ aire_con_ictus_resumen
 ```{r}
 
 calucla_media_sustancias_por_provincia_y_meses <-aire_con_ictus_resumen %>%
-  filter(anyo %in% c(2019, 2020, 2021, 2022, 2023)) %>%  
   group_by(provincia, anyo, mes) %>%  
   summarize(num_ictus=n(),
             avg_NO = mean(NO, na.rm = TRUE),
