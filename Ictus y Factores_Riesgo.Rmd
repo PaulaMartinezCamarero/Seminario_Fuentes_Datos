@@ -118,6 +118,7 @@ altas_hospitalarias_ictus %>%
   json_types%>%
   count(name, type)
 ```
+
 Dejamos la tabla entera tabulada
 ```{r}
 altas_hosp_ictus_tab <- altas_hospitalarias_ictus%>%
@@ -335,6 +336,31 @@ calucla_media_sustancias_por_provincia_y_meses
 
 
   
+```
+Grafico de dispersión del NO:
+```{r}
+grafica_dispersion_num_ictus_prov_NO <- calucla_media_sustancias_por_provincia_y_meses%>%
+  ggplot(aes(x=avg_NO, y=num_ictus))+
+  geom_point(aes(colour = factor(provincia)))+
+  geom_smooth(method = "lm", aes(colour = factor(provincia)))
+grafica_dispersion_num_ictus_prov_NO
+
+```
+Grafico de dispersión del 03:
+```{r}
+grafica_dispersion_num_ictus_prov_O3 <- calucla_media_sustancias_por_provincia_y_meses%>%
+  ggplot(aes(x=avg_O3, y=num_ictus))+
+  geom_point(aes(colour = factor(provincia)))+
+  geom_smooth(method = "lm", aes(colour = factor(provincia)))
+grafica_dispersion_num_ictus_prov_O3
+```
+Grafico de dispersión del PM25:
+```{r}
+grafica_dispersion_num_ictus_prov_PM25 <- calucla_media_sustancias_por_provincia_y_meses%>%
+  ggplot(aes(x=avg_PM25, y=num_ictus))+
+  geom_point(aes(colour = factor(provincia)))+
+  geom_smooth(method = "lm", aes(colour = factor(provincia)))
+grafica_dispersion_num_ictus_prov_PM25
 ```
 
 
