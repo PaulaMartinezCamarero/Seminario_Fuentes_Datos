@@ -32,6 +32,7 @@ library(rjson)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(lubridate)
 library(readr)
 ```
 
@@ -234,17 +235,6 @@ Tras realizar el anova(analisis de la varianza) con la edad como variable numér
 
 
 
-- 4 Intentamos juntar sexo y edad (A LO MEJOR LO QUITAMOS)
-
-```{r}
-str(resultados_edad)
-str(resultados_sexo)
-resultados_combinados <- full_join(resultados_edad,resultados_sexo)
-resultados_combinados
-
-
-```
-
 
 Obtener el número de casos por provincias para empezar a relacionarlo con los siguientes objetivos
 ```{r}
@@ -274,10 +264,10 @@ calidad_aire
 #View(calidad_aire)
 
 ```
+
+
 Calculamos la media de los factores más destacados del aire, agrupados por fecha y provincia.
 ```{r}
-library(lubridate)
-
 media_factores_aire <-calidad_aire%>%
     rename(provincia=Provincia)%>%
     mutate(Fechas = my(Fecha))%>%
@@ -298,9 +288,6 @@ media_factores_aire
 ```
 
 ```{r}
-
-library(lubridate)
-library(dplyr)
 
 #para poder hacer el estudio de manera correcta de la calidad del aire
 altas_hosp_ictus_fecha_bien <- altas_hosp_ictus_tab %>%
@@ -323,6 +310,8 @@ aire_con_ictus_resumen <- aire_con_ictus%>%
   select(Fechas,mes,anyo,edad,sexo,dia_semana,provincia,NO,O3,PM25,ambito)
 aire_con_ictus_resumen
 ```
+
+
 ```{r}
 
 calucla_media_sustancias_por_provincia_y_meses <-aire_con_ictus_resumen %>%
@@ -332,8 +321,6 @@ calucla_media_sustancias_por_provincia_y_meses <-aire_con_ictus_resumen %>%
             avg_O3=mean(O3, na.rm = TRUE),
             avg_PM25=mean(PM25, na.rm = TRUE)) 
 calucla_media_sustancias_por_provincia_y_meses
-
-
 
   
 ```
@@ -512,31 +499,8 @@ grafica_aire
 
 
 
-#Importamos los datos de sedentarismo
 
-```{r} 
 
-sedentarismo <- read_delim("INPUT/data/sedentarismo.csv", 
-    delim = ";", escape_double = FALSE, na = "No consta", 
-    trim_ws = TRUE)
-
-#View(sedentarismo)
-```
-
-```{r}
-install.packages("pxR")
-library("pxR")
-sedentarismo_px <- read.px("INPUT/data/sedentarismo.px")
-sedentarismo <- as.data.frame(sedentarismo_px)
-sedentarismo
-
-```
-#Importamos los datos de consumo de fruta, verduras, ensaladas y hortalizas.
-```{r}
-frutas_px <- read.px("INPUT/data/consumo_fruta_y_verdura.px")
-frutas <- as.data.frame(frutas_px)
-frutas
-```
 
 value nos da el porcentaje de gente que si consume lo indicado en tipo de alimento.
 ```{r}
@@ -551,22 +515,6 @@ porcentaje_sin_ictus_provincia <-100-porcentaje_ictus_provincia
 porcentaje_sin_ictus_provincia
 ```
 
-```{r}
-
-
-
-```
-
-
-#Importamos los datos exposición al humo
-```{r}
-exposicion_humo <- read_delim("INPUT/data/exposicion_humo.csv", 
-    delim = ";", escape_double = FALSE, trim_ws = TRUE)
-#View(exposicion_humo)
-```
-```{r}
-exposicion_humo
-```
 
 
 
@@ -678,7 +626,6 @@ grafica2
 
 Gráfica en la que representamos el número de habitantes por centro para cada provincia:
 ```{r}
-
 resultado
 resultado_sin_ult_fila=resultado[1:9,]
 str(resultado_sin_ult_fila)
@@ -697,7 +644,7 @@ grafica3
 
 Obtenemos una tabla que nos permite visualizar de manera numérica toda la información estudiada anteriormente:
 ```{r}
-library(dplyr)
+
 tabla_centros <- tibble(Provincia=datos$pob.provincia,
                         Numero_de_ictus=datos$num_ictus.numero_ictus,
                         Poblacion_total_cyl=pob_cyl_sin_ult_fila$Poblacion_total,
@@ -720,9 +667,7 @@ Tras la realización de las tres gráficas anteriores para ver como están relac
 
 Por lo tanto,visualmente y falta de un estudio estadístico preciso no podemos determinar si el número de centros es un factor estadísticamente significativo para el riesgo de padecer un ictus.
 
-#Ictus y sedentarismo
 
-#Ictus y exposición al humo
 
 #Ictus y calidad del aire
 
