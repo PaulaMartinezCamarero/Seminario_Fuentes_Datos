@@ -109,6 +109,15 @@ centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde
 ```
 
 
+
+## Importamos la función que cuenta el número de ictus por provincia:
+
+```{r}
+source("INPUT/functions/ictus_por_provincia.R")
+ictus_por_provincia(Provincias$Provincia)
+```
+
+
 # Manipulación de datos y resolución de cuestiones:
 
 # Ictus, edad y sexo
@@ -179,7 +188,7 @@ ictus_por_edad
 
 Realizamos una regresión polinómica:
 ```{r}
-regresion_edad_ictus <- lm(Conteo~poly(Edad,3),data=resultados_edad)
+regresion_edad_ictus <- lm(num_ictus~poly(Edad,3),data=ictus_por_edad)
 summary(regresion_edad_ictus)
 ```
 
@@ -188,7 +197,7 @@ En los resultados del modelor polinomial vemos que la edad es un factor estadís
 
 Gráfico que explica el modelo
 ```{r}
-ggplot(data=resultados_edad, aes(x=Edad,y=Conteo))+
+ggplot(data=ictus_por_edad, aes(x=Edad,y=num_ictus))+
   geom_point()+
   geom_smooth()
 ```
@@ -200,11 +209,7 @@ Se ve claramente como a edades bajas el número deictus es muy reducido pero a p
 Conteo por sexo:
 
 ```{r}
-sexototal <- altas_hospitalarias_ictus %>%
-  spread_all %>%               
-  enter_object("fields") %>%     
-  spread_all() %>% 
-  #con gather_object nos muestra 220,888 resultados
+sexototal <- altas_hosp_ictus_tab %>%
   rename(Sexo = sexo) %>%         
   select(Sexo)
 total_sexo <- sexototal$Sexo
@@ -212,6 +217,8 @@ total_sexo <- sexototal$Sexo
 ```
 
 Llamamos a la función que nos cuenta el número de hombres y de mujeres que han sufrido un ictus:
+
+### Basado en métodos de programación
 ```{r}
 source("INPUT/functions/total_por_sexo.R")
 resultados_sexo <- total_por_sexo(total_sexo)
@@ -219,11 +226,21 @@ print(resultados_sexo)
 
 
 ```
+### Basado en técnicas de manejo de datos
+
+```{r}
+ictus_por_sexo<- sexototal%>%
+  group_by(Sexo)%>%
+  summarise(num_ictus=n())
+ictus_por_sexo
+
+```
+
 
 Mostramos de manera visual la cantidad de hombres y mujeres:
 ```{r}
-resultados_sexo%>%
-  ggplot(mapping=aes(x=Sexo, y=Conteo))+
+ictus_por_sexo%>%
+  ggplot(mapping=aes(x=Sexo, y=num_ictus))+
   geom_bar(stat="identity", fill="gold")+
   labs(x="Sexo",y="Numero de ictus")
   
@@ -234,10 +251,7 @@ resultados_sexo%>%
 Realizamos un ANOVA:
 Para ello necesitamos conocer la media de la edad y su desviación estandar.
 ```{r}
-media_desviacion <- altas_hospitalarias_ictus %>%
-  spread_all %>%               
-  enter_object("fields") %>%     
-  spread_all() %>% 
+media_desviacion <- altas_hosp_ictus_tab %>%
   group_by(sexo) %>%
   summarise(
     media = mean(edad, na.rm = TRUE),
@@ -245,7 +259,7 @@ media_desviacion <- altas_hospitalarias_ictus %>%
   )
 
 media_desviacion
-anova_resultado <- aov(edades_total$Edad~ sexototal$Sexo, data = altas_hospitalarias_ictus)
+anova_resultado <- aov(edades_total$Edad ~ sexototal$Sexo, data = altas_hosp_ictus_tab)
 
 summary(anova_resultado)
 ```
@@ -263,22 +277,13 @@ Tras realizar el anova(analisis de la varianza) con la edad como variable numér
 Obtener el número de casos por provincias para empezar a relacionarlo con los siguientes objetivos
 ```{r}
 
-Provincias <- altas_hospitalarias_ictus%>%
-  spread_all()%>%
-  enter_object(fields)%>%
+Provincias <- altas_hosp_ictus_tab%>%
   rename(Provincia=fields.provincia)%>%
   select(Provincia)
 Provincias$Provincia <- ifelse(Provincias$Provincia == "Ávila", "Avila", Provincias$Provincia)
 Provincias
 
 ```
-
-Importamos la función que cuenta el número de ictus por provincia:
-```{r}
-source("INPUT/functions/ictus_por_provincia.R")
-ictus_por_provincia(Provincias$Provincia)
-```
-
 
 
 
