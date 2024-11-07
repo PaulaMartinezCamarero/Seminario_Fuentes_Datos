@@ -25,7 +25,7 @@ load("OUTPUT/objetos_actuales.Rdata")
 
 ```
 
-Importamos las librerías necesarias:
+# Importación de librerías necesarias
 ```{r}
 library(tidyjson)
 library(rjson)
@@ -37,43 +37,44 @@ library(readr)
 ```
 
 
-#Introducción
+# Introducción
+
 En nuestro seminario vamos a estudiar las altas hospitalarias por ictus, en los diferentes hospitales de Castilla y León durante cuatro años, y como estas, están relacionadas con distintos factores de riesgo.
 
 Lo primero de todo, explicar que los factor de riesgo son características o circunstancias que atentan contra el equilibrio, contra la salud, y que causan enfermedades o muerte. [senado1999factores]
 
-Durante el desarrollo de nuestro seminario vamos a trabajar con datos de dos factores de riesgo, los cuales son: un estilo de vida sedentario y la exposición al humo. Además, vamos a relacionar también el ictus con la calidad del aire.
+Durante el desarrollo de nuestro seminario vamos a trabajar con datos de dos factores de riesgo, los cuales son: la calidad del aire y valorar si los centros de desintoxicación los podemos considerar como factor de riesgo  o como factor de prevención de sufrir un ictus.
 
-El ser sedentario es un factor de riesgo del ictus, ya que "existe una significativa relación inversa entre actividad física y riesgo de ictus..., tanto en varones como en mujeres" [martinez2000factores]
-
-Otro factor de riesgo del ictus es la exposición al humo, ya que "los fumaodres pasivos también tienen un mayor riesgo de ictus, puesto que la exposición al humo del cigarrillo aumenta el riesgo de progresión de aterosclerosis." [martinez2000factores]
 
 La calidad del aire es otro factor de riesgo del ictus, quizás menos conocido, pero estudios confirman que "Niveles más elevados de NO el día de ingreso conlleva un aumento del riesgo de mortalidad" [suarez2024influencia]
 
 
-#Objetivos
+# Objetivos
 
 **Objetivos principales:**
+
 1.Estudiar la cantidad de altas hospitalarias por ictus que hay en cada provincia de Castilla y León y ver como varían dependiendo del sexo y de la edad.
-2.Analizar como el sedentarismo influye dependiendo de la edad en el riesgo de sufrir un ictus.
-3.Estudiar la relación de estar expuesto al humo con la probabilidad de sufrir un ictus. Además, vamos a ver si hay más número de centros de ayuda para desintoxicación, en las provincias en las que más ictus haya habido.
-4.Analizar si a peor calidad del aire hay más riesgo de sufrir un ictus.
+
+2.Analizar si a peor calidad del aire hay más riesgo de sufrir un ictus.
+
+3.Estudiar la relación entre centros de ayuda a la desintoxicación por provincia y el número de ictus.
 
 
-#Procedencia y Descripción  de datos
+
+# Procedencia de datos
 
 Los datos han sido recabados de [Datos abiertos del gobierno de españa](https://datos.gob.es/es/) que hasta el momento contiene cerca de 90000 conjuntos de datos, distribuidos en un amplio número de temáticas.También supera las 550000 distribuciones, Además de 313 iniciativas de datos abiertos.
 
 
-#Descripción y Importación de datos
-**Descripción**
-Contamos con 3 sets de datos en tipo *.csv*.
+# Descripción y Importación de datos
+
+**Descripción:**
+
+Contamos con 1 set de datos en tipo *.csv*.
 Este formato, **(Comma Separated Values)** son archivos de texto que en pricipio deberían estar con los caracteres separados por comas, aunque en algunos de nuestros datos se usa punto y coma en lugar de la coma.
 
-Estos son nuestros archivos *.csv*.:
+Este es nuestro archivo *.csv*.:
   -[calidad_aire](https://servicios.jcyl.es/esco/cargarFrmDatosHistoricos.action)
-  -[sedentarismo](https://datos.gob.es/es/catalogo/ea0010587-sedentarismo-segun-sexo-y-grupo-de-edad-poblacion-de-15-y-mas-anos-identificador-api-t15-p420-a2019-p06-l0-04006-px1)
-  -[exposicion_humo](https://datos.gob.es/es/catalogo/ea0010587-exposicion-al-humo-de-tabaco-en-lugares-cerrados-segun-sexo-pais-de-nacimiento-y-grupo-de-edad-poblacion-de-15-y-mas-anos-identificador-api-t15-p420-a2019-p03-l0-02026-px1)
   
 También contamos con dos sets de datos *.json*.**(JavaScript Object Notation)** es un formato para almacenar e intercambiar datos.
 
@@ -83,24 +84,39 @@ Estos son nuestros archivos *.json*.:
 Este último proviene del **Instituto Nacional de Estadística (INE)**.
 
 
-
   
-#Manipulación de datos
 
-#Importación de datos
 
-#Importamos los datos de las altas hospitalarias por ictus
+# Importación de datos
 
+## Importamos los datos de las altas hospitalarias por ictus
 
 ```{r}
 altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
 ```
 
-#Ictus, edad y sexo
--Para resolver el primer objetivo vamos a:
-  - 1 Obtener las edades de todos los pacientes para ver si la edad es un factor determinante en el aumento de los ictus.
+## Importamos los datos de la calidad del aire:
+```{r}
+calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
+calidad_aire
+
+```
+
+
+## Importamos los datos de los centros de desintoxicación:
+```{r}
+centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde.json")
+```
+
+
+# Manipulación de datos y resolución de cuestiones:
+
+# Ictus, edad y sexo
+
+Para resolver el primer objetivo vamos a:
+
+  - Obtener las edades de todos los pacientes para ver si la edad es un factor determinante en el aumento de los ictus, para ello necesitamos conocer como está organizado nuestro json.
   
-  Para ello necesitamos conocer como está organizado nuestro json.
 ```{r}
 altas_hospitalarias_ictus %>%
   spread_all() %>%
@@ -119,7 +135,7 @@ altas_hospitalarias_ictus %>%
   count(name, type)
 ```
 
-Dejamos la tabla entera tabulada
+Dejamos la tabla entera tabulada, para trabajar a partir de ahora con este objeto: 
 ```{r}
 altas_hosp_ictus_tab <- altas_hospitalarias_ictus%>%
   spread_all()%>%
@@ -129,27 +145,36 @@ altas_hosp_ictus_tab
 ```
 
 
-Calculamos conteo por edad:
+Calculamos el número de personas que han sufrido un ictus para cada edad, para ello obtenemos el atributo edad de cada una de las personas.Además lo haremos de dos maneras:
 ```{r}
-edades_total <- altas_hospitalarias_ictus %>%
-  spread_all %>%               
-  enter_object("fields") %>%     
-  spread_all() %>% 
-  #con gather_object nos muestra 220,888 resultados
+edades_total <- altas_hosp_ictus_tab %>%
   rename(Edad = edad) %>%         
   select(Edad)
 edades_total
 
 ```
+
  
  
 Importamos función que cuenta el total para cada una de las edades:
+
+### Primera manera (orientada en programación) para obtener el numero de casos por edad
+
+  Se trata de una función programada más desde un punto de vista de programación, más adelante mostraremos como hacerlo desde un enfoque en el manejo de datos como se requiere en la asignatura y por ende, la gran mayoría de código quedará implementado de la segunda manera. 
+  
 ```{r}
-#edades_total$Edad
 source("INPUT/functions/total_por_edad.R")
 resultados_edad <- total_por_edad(edades_total)
 print(resultados_edad)
 
+```
+
+### Segunda manera (orientada al manejo de datos) para obtener el numero de casos por edad
+```{r}
+ictus_por_edad <- edades_total%>%
+  group_by(Edad)%>%
+  summarise(num_ictus=n())
+ictus_por_edad
 ```
 
 Realizamos una regresión polinómica:
@@ -256,13 +281,7 @@ ictus_por_provincia(Provincias$Provincia)
 
 
 
-#Importamos los datos de la calidad del aire
-```{r}
-calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
-calidad_aire
-#View(calidad_aire)
 
-```
 
 
 Calculamos la media de los factores más destacados del aire, agrupados por fecha y provincia.
@@ -510,7 +529,7 @@ porcentaje_sin_ictus_provincia
 #Importamos los datos de los centros de desintoxicación
 Visionamos los datos y vemos que con hacer un spread_all podemos obtener lo que necesitamos para nuestro trabajo.
 ```{r}
-centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde.json")
+
 spread_all(centros_servicios_saisde)
 
 ```
