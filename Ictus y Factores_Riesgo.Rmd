@@ -93,7 +93,6 @@ Este último proviene del **Instituto Nacional de Estadística (INE)**.
 
 
 ```{r}
-library(rjson)
 altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
 ```
 
@@ -198,12 +197,12 @@ print(resultados_sexo)
 
 Mostramos de manera visual la cantidad de hombres y mujeres:
 ```{r}
-grafica_sexo <-  resultados_sexo%>%
+resultados_sexo%>%
   ggplot(mapping=aes(x=Sexo, y=Conteo))+
   geom_bar(stat="identity", fill="gold")+
   labs(x="Sexo",y="Numero de ictus")
   
-grafica_sexo
+
   
 ```
 
@@ -330,11 +329,11 @@ El gráfico que se muestra a continuación nos sirve para ver si cuando la conce
 
 Grafico de dispersión del NO:
 ```{r}
-grafica_dispersion_num_ictus_prov_NO <- calucla_media_sustancias_por_provincia_y_meses%>%
+calucla_media_sustancias_por_provincia_y_meses%>%
   ggplot(aes(x=avg_NO, y=num_ictus))+
   geom_point(aes(colour = factor(provincia)))+
   geom_smooth(method = "lm", aes(colour = factor(provincia)))
-grafica_dispersion_num_ictus_prov_NO
+
 
 ```
 El ozono es uno de los principales contaminantes del aire.
@@ -344,11 +343,11 @@ Por ello vamos a realizar un gráfico de dispersión en el que veamos como varí
 
 Grafico de dispersión del 03:
 ```{r}
-grafica_dispersion_num_ictus_prov_O3 <- calucla_media_sustancias_por_provincia_y_meses%>%
+calucla_media_sustancias_por_provincia_y_meses%>%
   ggplot(aes(x=avg_O3, y=num_ictus))+
   geom_point(aes(colour = factor(provincia)))+
   geom_smooth(method = "lm", aes(colour = factor(provincia)))
-grafica_dispersion_num_ictus_prov_O3
+
 ```
 
 La mortalidad cardiovascular y también las hospitalización aumentan en un día determinado entre un 0,5% y un 1% por cada aumento de 10 mg/m3 de PM2.5.
@@ -357,35 +356,28 @@ Por ello vamos a realizar un gráfico de dispersión para ver si cuando los nive
 
 Grafico de dispersión del PM25:
 ```{r}
-grafica_dispersion_num_ictus_prov_PM25 <- calucla_media_sustancias_por_provincia_y_meses%>%
+calucla_media_sustancias_por_provincia_y_meses%>%
   ggplot(aes(x=avg_PM25, y=num_ictus))+
   geom_point(aes(colour = factor(provincia)))+
   geom_smooth(method = "lm", aes(colour = factor(provincia)))
-grafica_dispersion_num_ictus_prov_PM25
+
 ```
 
 
 Añado en la tabla anterior una columna en la que aparece el número de ictus en cada provincia, para así poder hacer las gráficas
 ```{r}
 ictus_por_provincia <- data.frame(provincia=c("Avila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora"),
-                                  numero_ictus=c(1178,2788,3513,1064,3743,1142,601,4575,1486))
+numero_ictus=c(1178,2788,3513,1064,3743,1142,601,4575,1486))
 ictus_por_provincia
 aire_con_num_ictus <- full_join(aire_con_ictus_resumen, ictus_por_provincia, "provincia")
 #aire_con_num_ictus
 ```
 
-```{r}
-?geom_smooth
-grafica_puntos_NO <- ggplot(calucla_media_sustancias_por_provincia_y_meses, aes(x=avg_NO,y=num_ictus))+
-  geom_point(colour="red")
-
-
-```
 
 
 
 ```{r}
-g_ictus_prov_gas_NO <- aire_con_num_ictus %>%
+aire_con_num_ictus %>%
   distinct(provincia, .keep_all = TRUE) %>%  
   ggplot(aes(x = reorder(provincia, numero_ictus), y = numero_ictus)) + 
   geom_bar(stat = "identity", aes(fill = NO)) +
@@ -393,13 +385,12 @@ g_ictus_prov_gas_NO <- aire_con_num_ictus %>%
   labs(x = "", y = "Número ictus", fill = "Media de gas") +
   theme_classic()
 
-g_ictus_prov_gas_NO
 ```
 En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de NO, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
 
 
 ```{r}
-g_ictus_prov_gas_PM25 <- aire_con_num_ictus %>%
+aire_con_num_ictus %>%
   distinct(provincia, .keep_all = TRUE) %>%  
   ggplot(aes(x = reorder(provincia, numero_ictus), y = numero_ictus)) + 
   geom_bar(stat = "identity", aes(fill = PM25)) +
@@ -407,12 +398,12 @@ g_ictus_prov_gas_PM25 <- aire_con_num_ictus %>%
   labs(x = "", y = "Número ictus", fill = "Media de gas") +
   theme_classic()
 
-g_ictus_prov_gas_PM25
+
 ```
 En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de PM25, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
 
 ```{r}
-g_ictus_prov_gas_O3 <- aire_con_num_ictus %>%
+aire_con_num_ictus %>%
   distinct(provincia, .keep_all = TRUE) %>% 
   ggplot(aes(x = reorder(provincia, numero_ictus), y = numero_ictus)) + 
   geom_bar(stat = "identity", aes(fill = O3)) +
@@ -420,7 +411,6 @@ g_ictus_prov_gas_O3 <- aire_con_num_ictus %>%
   labs(x = "", y = "Número ictus", fill = "Media de gas") +
   theme_classic()
 
-g_ictus_prov_gas_O3
 ```
 En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de O3, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
 
@@ -439,10 +429,8 @@ aire_con_num_ictus_long <- aire_con_num_ictus %>%
                names_to = "gas", 
                values_to = "concentracion_gas")
 
-grafica_conc_gases_por_prov_num_ictus <- ggplot(aire_con_num_ictus_long, 
-                                                 aes(x = provincia, 
-                                                     y = numero_ictus, 
-                                                     fill = concentracion_gas)) + 
+ggplot(aire_con_num_ictus_long, 
+  aes(x = provincia, y = numero_ictus, fill = concentracion_gas)) + 
   geom_bar(stat = "identity", position = position_dodge(width = 0.8)) + # Separar las barras
   scale_fill_gradient(low = "pink", high = "violet") + 
   labs(x = "Provincias", y = "Número de ictus",fill="Concentración de gas") +
@@ -450,7 +438,7 @@ grafica_conc_gases_por_prov_num_ictus <- ggplot(aire_con_num_ictus_long,
   theme_classic() 
 
 
-grafica_conc_gases_por_prov_num_ictus
+
 
 
 
@@ -461,27 +449,27 @@ Resumidamente, son las tres gráficas anteriores juntadas en una para una visual
 
 Como dato curioso, queremos ver si el día de la semana está relacionado con los ictus
 ```{r}
-grafica_dias_semana_ingreso <- aire_con_num_ictus %>%
+aire_con_num_ictus %>%
   distinct(provincia, .keep_all = TRUE) %>%  
-  ggplot(mapping=aes(x = dia_de_la_semana_en_la_fecha_del_ingreso, y = numero_ictus)) + 
+  ggplot(mapping=aes(x = dia_semana, y = numero_ictus)) + 
   geom_bar(stat = "identity", fill="purple") +
   labs(x = "Días de la semana", y="Número de ictus") +
   theme_classic()
 
-grafica_dias_semana_ingreso
+
 
 ```
 
 Ahora vamos a ver también como dato curioso el día de alta hospitalaria:
 ```{r}
-grafica_dias_semana_alta <- aire_con_num_ictus %>%
+aire_con_num_ictus %>%
   distinct(provincia, .keep_all = TRUE) %>%  
-  ggplot(mapping=aes(x = dia_de_la_semana_en_la_fecha_del_alta, y = numero_ictus)) + 
+  ggplot(mapping=aes(x = dia_semana, y = numero_ictus)) + 
   geom_bar(stat = "identity", fill="purple") +
   labs(x = "Días de la semana", y="Número de ictus") +
   theme_classic()
 
-grafica_dias_semana_alta
+
 ```
 
 
@@ -489,12 +477,12 @@ Por lo leído y descrito en uno de los artículos, niveles altos de NO el día d
 
 
 ```{r}
-grafica_aire <- media_factores_aire%>%
+media_factores_aire%>%
   ggplot(mapping=aes(x=provincia, y=NO))+
   geom_bar(stat = "identity",fill="pink")+
   labs(x="Provincias",y= "Media de NO")
 
-grafica_aire
+
 ```
 
 
@@ -534,7 +522,7 @@ Centros<- centros_servicios_saisde %>%
   count(provincia = fields.provincia)
 Centros$provincia[9]="Avila"
 
-print(Centros)
+Centros
 
 ordenadas <- arrange(Centros,Centros$provincia)
 ordenadas
@@ -596,7 +584,7 @@ datos
 
 Gráfica de barras en la que se representa el número de ictus en cada provincia, coloreando de un color más fuerte las barras con los más centros de desintoxicación.
 ```{r}
-grafica <- datos %>%
+datos %>%
   ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus.numero_ictus), y = num_ictus.numero_ictus)) +
   geom_bar(stat = "identity", aes(fill = centros.n)) +
   scale_fill_gradient(low = "peachpuff", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
@@ -605,21 +593,21 @@ grafica <- datos %>%
   theme_classic() +
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
 
-grafica
+
 
 ```
 
 
 Gráfica en la que aparece representado el número de centros por provincia:
 ```{r}
-grafica2 <- datos%>%
+datos%>%
    ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus.numero_ictus), y = centros.n)) +
   geom_bar(stat = "identity",fill="blue") +
   labs(x = "Provincias", y = "Número de centros") +
   scale_y_continuous(expand = expansion(mult = c(0, .1))) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
-grafica2
+
   
 ```
 
@@ -631,14 +619,14 @@ resultado_sin_ult_fila=resultado[1:9,]
 str(resultado_sin_ult_fila)
 
 
-grafica3 <-
-  ggplot(mapping = aes(x = reorder(datos$pob.provincia, datos$num_ictus.numero_ictus), y = resultado_sin_ult_fila$hab_centro)) +
+
+ggplot(mapping = aes(x = reorder(datos$pob.provincia, datos$num_ictus.numero_ictus), y = resultado_sin_ult_fila$hab_centro)) +
   geom_bar(stat = "identity", fill = "green") +
   labs(x = "Provincias", y = "Número habitantes por centro") +
   scale_y_continuous(expand = expansion(mult = c(0, .1))) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
-grafica3
+
 
 ```
 
