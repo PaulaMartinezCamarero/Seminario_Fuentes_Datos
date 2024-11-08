@@ -115,6 +115,10 @@ centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde
 ```{r}
 source("INPUT/functions/ictus_por_provincia.R")
 ictus_por_provincia(Provincias$Provincia)
+df_ictus_por_provincia <- data.frame(provincia=datos$pob.provincia,
+                n_ictus=datos$num_ictus.numero_ictus)
+df_ictus_por_provincia
+              
 ```
 
 
@@ -213,7 +217,6 @@ sexototal <- altas_hosp_ictus_tab %>%
   rename(Sexo = sexo) %>%         
   select(Sexo)
 total_sexo <- sexototal$Sexo
-#total_sexo
 ```
 
 Llamamos a la función que nos cuenta el número de hombres y de mujeres que han sufrido un ictus:
@@ -223,29 +226,23 @@ Llamamos a la función que nos cuenta el número de hombres y de mujeres que han
 source("INPUT/functions/total_por_sexo.R")
 resultados_sexo <- total_por_sexo(total_sexo)
 print(resultados_sexo)
-
-
 ```
-### Basado en técnicas de manejo de datos
 
+### Basado en técnicas de manejo de datos
 ```{r}
 ictus_por_sexo<- sexototal%>%
   group_by(Sexo)%>%
   summarise(num_ictus=n())
 ictus_por_sexo
-
 ```
+Un total de 11124 sufrieron un ictus y el número de mujeres fue de 8966.
 
-
-Mostramos de manera visual la cantidad de hombres y mujeres:
+Mostramos de manera visual con un gráfico de barras sencillo la cantidad de hombres y mujeres que han sufrido un ictus:
 ```{r}
 ictus_por_sexo%>%
   ggplot(mapping=aes(x=Sexo, y=num_ictus))+
   geom_bar(stat="identity", fill="gold")+
   labs(x="Sexo",y="Numero de ictus")
-  
-
-  
 ```
 
 Realizamos un ANOVA:
@@ -276,16 +273,12 @@ Tras realizar el anova(analisis de la varianza) con la edad como variable numér
 
 Obtener el número de casos por provincias para empezar a relacionarlo con los siguientes objetivos
 ```{r}
-
 Provincias <- altas_hosp_ictus_tab%>%
   rename(Provincia=fields.provincia)%>%
   select(Provincia)
 Provincias$Provincia <- ifelse(Provincias$Provincia == "Ávila", "Avila", Provincias$Provincia)
 Provincias
-
 ```
-
-
 
 
 
@@ -310,8 +303,9 @@ media_factores_aire
 
 ```
 
-```{r}
 
+Necesitamos cambiar el formato de la fecha, para así poder trabajar y agrupar datos que contienen fechas, ya que el paquete lubridate permite hacer lo que necesitamos con las fechas, en formato fecha.
+```{r}
 #para poder hacer el estudio de manera correcta de la calidad del aire
 altas_hosp_ictus_fecha_bien <- altas_hosp_ictus_tab %>%
   mutate(Fecha = ymd_hms(fields.fecha_de_ingreso))%>%
@@ -324,9 +318,10 @@ altas_hosp_ictus_fecha_bien
 
 ```
 
+
+Juntamos ambas tablas con sus atributos comunes que nos son de interes (mes, año y provincia)
 ```{r}
 aire_con_ictus <- full_join(altas_hosp_ictus_fecha_bien, media_factores_aire, by = c("mes","anyo", "provincia"))
-#aire_con_ictus_tab <- aire_con_ictus%>%
   
 aire_con_ictus_resumen <- aire_con_ictus%>%
   rename(ambito=fields.ambito_de_procedencia,dia_semana=fields.dia_de_la_semana_en_la_fecha_del_ingreso)%>%
@@ -335,25 +330,24 @@ aire_con_ictus_resumen
 ```
 
 
-```{r}
+Calculamos la media de cada una de las sustancias (NO, O3 y PM25) agrupadas por provincia, año y mes. Además, contamos el número de ictus que hay para cada uno de ellos.
 
-calucla_media_sustancias_por_provincia_y_meses <-aire_con_ictus_resumen %>%
+```{r}
+calcula_media_sustancias_por_provincia_y_meses <-aire_con_ictus_resumen %>%
   group_by(provincia, anyo, mes) %>%  
   summarize(num_ictus=n(),
             avg_NO = mean(NO, na.rm = TRUE),
             avg_O3=mean(O3, na.rm = TRUE),
             avg_PM25=mean(PM25, na.rm = TRUE)) 
-calucla_media_sustancias_por_provincia_y_meses
-
-  
+calcula_media_sustancias_por_provincia_y_meses
 ```
 
 Estudios confirman que "Niveles más elevados de NO el día de ingreso conlleva un aumento del riesgo de mortalidad debido a ictus"
-El gráfico que se muestra a continuación nos sirve para ver si cuando la concentración de NO es mayor hay un mayor número de ictus.
+El gráfico que se muestra a continuación nos sirve para ver sí cuando la concentración de NO es mayor hay un mayor número de ictus.
 
 Grafico de dispersión del NO:
 ```{r}
-calucla_media_sustancias_por_provincia_y_meses%>%
+calcula_media_sustancias_por_provincia_y_meses%>%
   ggplot(aes(x=avg_NO, y=num_ictus))+
   geom_point(aes(colour = factor(provincia)))+
   geom_smooth(method = "lm", aes(colour = factor(provincia)))
@@ -367,7 +361,7 @@ Por ello vamos a realizar un gráfico de dispersión en el que veamos como varí
 
 Grafico de dispersión del 03:
 ```{r}
-calucla_media_sustancias_por_provincia_y_meses%>%
+calcula_media_sustancias_por_provincia_y_meses%>%
   ggplot(aes(x=avg_O3, y=num_ictus))+
   geom_point(aes(colour = factor(provincia)))+
   geom_smooth(method = "lm", aes(colour = factor(provincia)))
@@ -380,7 +374,7 @@ Por ello vamos a realizar un gráfico de dispersión para ver si cuando los nive
 
 Grafico de dispersión del PM25:
 ```{r}
-calucla_media_sustancias_por_provincia_y_meses%>%
+calcula_media_sustancias_por_provincia_y_meses%>%
   ggplot(aes(x=avg_PM25, y=num_ictus))+
   geom_point(aes(colour = factor(provincia)))+
   geom_smooth(method = "lm", aes(colour = factor(provincia)))
@@ -388,23 +382,11 @@ calucla_media_sustancias_por_provincia_y_meses%>%
 ```
 
 
-Añado en la tabla anterior una columna en la que aparece el número de ictus en cada provincia, para así poder hacer las gráficas
 ```{r}
-ictus_por_provincia <- data.frame(provincia=c("Avila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora"),
-numero_ictus=c(1178,2788,3513,1064,3743,1142,601,4575,1486))
-ictus_por_provincia
-aire_con_num_ictus <- full_join(aire_con_ictus_resumen, ictus_por_provincia, "provincia")
-#aire_con_num_ictus
-```
-
-
-
-
-```{r}
-aire_con_num_ictus %>%
+calcula_media_sustancias_por_provincia_y_meses %>%
   distinct(provincia, .keep_all = TRUE) %>%  
-  ggplot(aes(x = reorder(provincia, numero_ictus), y = numero_ictus)) + 
-  geom_bar(stat = "identity", aes(fill = NO)) +
+  ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
+  geom_bar(stat = "identity", aes(fill = avg_NO)) +
   scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "", y = "Número ictus", fill = "Media de gas") +
   theme_classic()
@@ -414,23 +396,21 @@ En esta gráfica aparecen representados los números de ictus por  provincia y l
 
 
 ```{r}
-aire_con_num_ictus %>%
+calcula_media_sustancias_por_provincia_y_meses %>%
   distinct(provincia, .keep_all = TRUE) %>%  
-  ggplot(aes(x = reorder(provincia, numero_ictus), y = numero_ictus)) + 
-  geom_bar(stat = "identity", aes(fill = PM25)) +
+  ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
+  geom_bar(stat = "identity", aes(fill = avg_O3)) +
   scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "", y = "Número ictus", fill = "Media de gas") +
   theme_classic()
-
-
 ```
 En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de PM25, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
 
 ```{r}
-aire_con_num_ictus %>%
-  distinct(provincia, .keep_all = TRUE) %>% 
-  ggplot(aes(x = reorder(provincia, numero_ictus), y = numero_ictus)) + 
-  geom_bar(stat = "identity", aes(fill = O3)) +
+calcula_media_sustancias_por_provincia_y_meses %>%
+  distinct(provincia, .keep_all = TRUE) %>%  
+  ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
+  geom_bar(stat = "identity", aes(fill = avg_PM25)) +
   scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "", y = "Número ictus", fill = "Media de gas") +
   theme_classic()
@@ -446,15 +426,14 @@ https://r-charts.com/es/ggplot2/facetas/
 https://rpubs.com/Edimer/689875
 
 ```{r}
-
-aire_con_num_ictus_long <- aire_con_num_ictus %>%
-  distinct(provincia, numero_ictus, NO, PM25, O3) %>%
-  pivot_longer(cols = c(NO, PM25, O3), 
+aire_con_num_ictus_long <- calcula_media_sustancias_por_provincia_y_meses %>%
+  distinct(provincia, num_ictus, avg_NO, avg_PM25, avg_O3) %>%
+  pivot_longer(cols = c(avg_NO, avg_PM25, avg_O3), 
                names_to = "gas", 
                values_to = "concentracion_gas")
 
 ggplot(aire_con_num_ictus_long, 
-  aes(x = provincia, y = numero_ictus, fill = concentracion_gas)) + 
+  aes(x = provincia, y = num_ictus, fill = concentracion_gas)) + 
   geom_bar(stat = "identity", position = position_dodge(width = 0.8)) + # Separar las barras
   scale_fill_gradient(low = "pink", high = "violet") + 
   labs(x = "Provincias", y = "Número de ictus",fill="Concentración de gas") +
@@ -473,9 +452,12 @@ Resumidamente, son las tres gráficas anteriores juntadas en una para una visual
 
 Como dato curioso, queremos ver si el día de la semana está relacionado con los ictus
 ```{r}
-aire_con_num_ictus %>%
-  distinct(provincia, .keep_all = TRUE) %>%  
-  ggplot(mapping=aes(x = dia_semana, y = numero_ictus)) + 
+numero_ictus_dia_semana <-aire_con_ictus_resumen %>%
+  group_by(dia_semana) %>%  
+  summarize(num_ictus=n())
+            
+numero_ictus_dia_semana %>%
+  ggplot(mapping=aes(x = dia_semana, y = num_ictus)) + 
   geom_bar(stat = "identity", fill="purple") +
   labs(x = "Días de la semana", y="Número de ictus") +
   theme_classic()
@@ -484,51 +466,9 @@ aire_con_num_ictus %>%
 
 ```
 
-Ahora vamos a ver también como dato curioso el día de alta hospitalaria:
-```{r}
-aire_con_num_ictus %>%
-  distinct(provincia, .keep_all = TRUE) %>%  
-  ggplot(mapping=aes(x = dia_semana, y = numero_ictus)) + 
-  geom_bar(stat = "identity", fill="purple") +
-  labs(x = "Días de la semana", y="Número de ictus") +
-  theme_classic()
-
-
-```
 
 
 Por lo leído y descrito en uno de los artículos, niveles altos de NO el día de ingreso conlleva a mas riesgo de mortalidad, al ser nuestros datos de altas hospitalarias por ictus y no de muertes, lo que vamos a intentar ver es si los días que hay un mayor número de ingresos coinciden con niveles altos de NO.
-
-
-```{r}
-media_factores_aire%>%
-  ggplot(mapping=aes(x=provincia, y=NO))+
-  geom_bar(stat = "identity",fill="pink")+
-  labs(x="Provincias",y= "Media de NO")
-
-
-```
-
-
-
-
-
-
-value nos da el porcentaje de gente que si consume lo indicado en tipo de alimento.
-```{r}
-source("INPUT/functions/ictus_por_provincia.R")
-ictus_por_provincia(Provincias) #calcularemos el porcentaje que supone de la población total
-source("INPUT/functions/divide.R")
-source("INPUT/functions/poblacion_cyl.R")
-
-porcentaje_ictus_provincia <- divide(ictus_por_provincia(Provincias),poblacion_cyl$Poblacion_total[1:9])*100
-porcentaje_ictus_provincia
-porcentaje_sin_ictus_provincia <-100-porcentaje_ictus_provincia
-porcentaje_sin_ictus_provincia
-```
-
-
-
 
 
 #Importamos los datos de los centros de desintoxicación
