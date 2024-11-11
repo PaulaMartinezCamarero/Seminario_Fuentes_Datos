@@ -205,6 +205,7 @@ ggplot(data=ictus_por_edad, aes(x=Edad,y=num_ictus))+
   geom_point()+
   geom_smooth()
 ```
+
 Se ve claramente como a edades bajas el número deictus es muy reducido pero a partir de la barrera de los 45-50 empieza a subir drásticamente hasta los 75-88 que empieza a disminuir ya que a estas edades comienza a disminuir la tasa de supervivencia ya que las personas fallecen por otras patologías o por causas naturales.
 
 
