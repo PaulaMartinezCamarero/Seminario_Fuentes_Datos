@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE)
 ```
 
 Link del repositorio de github [aquí](https://github.com/PaulaMartinezCamarero/Seminario_Fuentes_Datos)
@@ -306,6 +306,7 @@ media_factores_aire
 
 
 Necesitamos cambiar el formato de la fecha, para así poder trabajar y agrupar datos que contienen fechas, ya que el paquete lubridate permite hacer lo que necesitamos con las fechas, en formato fecha.
+
 ```{r}
 #para poder hacer el estudio de manera correcta de la calidad del aire
 altas_hosp_ictus_fecha_bien <- altas_hosp_ictus_tab %>%
@@ -321,6 +322,7 @@ altas_hosp_ictus_fecha_bien
 
 
 Juntamos ambas tablas con sus atributos comunes que nos son de interes (mes, año y provincia)
+
 ```{r}
 aire_con_ictus <- full_join(altas_hosp_ictus_fecha_bien, media_factores_aire, by = c("mes","anyo", "provincia"))
   
@@ -347,6 +349,7 @@ Estudios confirman que "Niveles más elevados de NO el día de ingreso conlleva 
 El gráfico que se muestra a continuación nos sirve para ver sí cuando la concentración de NO es mayor hay un mayor número de ictus.
 
 Grafico de dispersión del NO:
+
 ```{r}
 calcula_media_sustancias_por_provincia_y_meses%>%
   ggplot(aes(x=avg_NO, y=num_ictus))+
@@ -355,12 +358,16 @@ calcula_media_sustancias_por_provincia_y_meses%>%
 
 
 ```
+
+Podemos observar que las lineas para cada provincia según el articulo(ref) deberían salir con pendiente positiva pero no es así. Creemos que este resultado se debe a un pequeño matiz entre el artículo y nuestros datos. Dicho matiz se trata de que en el artículo nos indica que concentraciones altas de NO aumentaban el riesgo de mortalidad mientras que en nuestros datos los pacientes que tenemos han recibido el alta. Así que como no tenemos número de fallecidos no lo podemos contrastar realmente con el artículo.
+
 El ozono es uno de los principales contaminantes del aire.
 Tal y como afirma el profesor Shaowei Wu, de la universidad Xi´an Jiaotong (China): "estudios previos han sugerido que la contaminación por ozono daña el corazón y los vasos sanguíneos".
 
 Por ello vamos a realizar un gráfico de dispersión en el que veamos como varía el número de ictus dependiendo de como sea la media de O3 en cada provincia.
 
-Grafico de dispersión del 03:
+Gráfico de dispersión del 03:
+
 ```{r}
 calcula_media_sustancias_por_provincia_y_meses%>%
   ggplot(aes(x=avg_O3, y=num_ictus))+
@@ -369,7 +376,11 @@ calcula_media_sustancias_por_provincia_y_meses%>%
 
 ```
 
-La mortalidad cardiovascular y también las hospitalización aumentan en un día determinado entre un 0,5% y un 1% por cada aumento de 10 mg/m3 de PM2.5.
+En este caso, sí que podemos observar una pendiente positiva a mayor concentración de ozono por lo que podemos concluir que si es un factor que aumenta el numero de ictus.
+
+Las hospitalizaciones aumentan en un día determinado entre un 0,5% y un 1% por cada aumento de 10 mg/m3 de PM2.5.
+PM2.5: Hace referencia al material particulado respirable presente en la atmósfera. Se puede encontrar más información sobre PM2.5 [aqui](https://www.iqair.com/es/newsroom/pm2-5)
+
 Por ello vamos a realizar un gráfico de dispersión para ver si cuando los niveles de PM2.5 son más elevados hay mayor número de ictus.
 
 
@@ -382,6 +393,11 @@ calcula_media_sustancias_por_provincia_y_meses%>%
 
 ```
 
+En este caso tenemos provincias que no tienen valores de PM2.5 (las que no tienen linea en el gráfico) pero en las que lo tenemos en todas se cumple que a mayor concentración mayor número de ictus.
+
+Ahora vamos a realizar 3 gráficos, uno para cada sustancia
+
+Gráfico que muestra la media de NO (en una escala de colores) por provincia y mes:
 
 ```{r}
 calcula_media_sustancias_por_provincia_y_meses %>%
@@ -389,12 +405,33 @@ calcula_media_sustancias_por_provincia_y_meses %>%
   ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
   geom_bar(stat = "identity", aes(fill = avg_NO)) +
   scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
-  labs(x = "", y = "Número ictus", fill = "Media de gas") +
+  labs(x = "", y = "Número ictus", fill = "Media de concentración de NO") +
   theme_classic()
 
 ```
+
+```{r}
+clibrary(ggplot2)
+library(plotly)
+
+p <- calcula_media_sustancias_por_provincia_y_meses %>%
+  ggplot(aes(x = interaction(provincia, anyo), y = num_ictus, fill = avg_NO)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  labs(x = "Provincia y Año", y = "Número de ictus", fill = "Media de concentración de NO") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Convierte el gráfico ggplot a plotly
+ggplotly(p, tooltip = c("x", "y", "fill"))
+
+
+```
+
 En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de NO, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
 
+
+Gráfico que muestra la media de 03 (en una escala de colores) por provincia y mes:
 
 ```{r}
 calcula_media_sustancias_por_provincia_y_meses %>%
@@ -402,10 +439,27 @@ calcula_media_sustancias_por_provincia_y_meses %>%
   ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
   geom_bar(stat = "identity", aes(fill = avg_O3)) +
   scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
-  labs(x = "", y = "Número ictus", fill = "Media de gas") +
+  labs(x = "", y = "Número ictus", fill = "Media de concentración de 03") +
   theme_classic()
 ```
+
+```{r}
+p1 <- calcula_media_sustancias_por_provincia_y_meses %>%
+  ggplot(aes(x = interaction(provincia, anyo), y = num_ictus, fill = avg_O3)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  labs(x = "Provincia y Año", y = "Número de ictus", fill = "Media de concentración de O3") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Convierte el gráfico ggplot a plotly
+ggplotly(p1, tooltip = c("x", "y", "fill"))
+```
+
 En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de PM25, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
+
+
+Gráfico que muestra la media de PM2.5 (en una escala de colores) por provincia y mes:
 
 ```{r}
 calcula_media_sustancias_por_provincia_y_meses %>%
@@ -413,7 +467,7 @@ calcula_media_sustancias_por_provincia_y_meses %>%
   ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
   geom_bar(stat = "identity", aes(fill = avg_PM25)) +
   scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
-  labs(x = "", y = "Número ictus", fill = "Media de gas") +
+  labs(x = "", y = "Número ictus", fill = "Media de concentración de PM2.5") +
   theme_classic()
 
 ```
