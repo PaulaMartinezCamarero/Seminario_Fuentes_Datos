@@ -25,7 +25,7 @@ load("OUTPUT/objetos_actuales.Rdata")
 
 ```
 
-# Importación de librerías necesarias
+# Importación de paquetes necesarios
 ```{r}
 library(tidyjson)
 library(rjson)
@@ -34,6 +34,7 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 library(readr)
+library(plotly)
 ```
 
 
@@ -366,6 +367,7 @@ Tal y como afirma el profesor Shaowei Wu, de la universidad Xi´an Jiaotong (Chi
 
 Por ello vamos a realizar un gráfico de dispersión en el que veamos como varía el número de ictus dependiendo de como sea la media de O3 en cada provincia.
 
+
 Gráfico de dispersión del 03:
 
 ```{r}
@@ -409,11 +411,10 @@ calcula_media_sustancias_por_provincia_y_meses %>%
   theme_classic()
 
 ```
+En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de NO, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
+
 
 ```{r}
-clibrary(ggplot2)
-library(plotly)
-
 p <- calcula_media_sustancias_por_provincia_y_meses %>%
   ggplot(aes(x = interaction(provincia, anyo), y = num_ictus, fill = avg_NO)) + 
   geom_bar(stat = "identity") +
@@ -421,15 +422,16 @@ p <- calcula_media_sustancias_por_provincia_y_meses %>%
   labs(x = "Provincia y Año", y = "Número de ictus", fill = "Media de concentración de NO") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
+p
 # Convierte el gráfico ggplot a plotly
 ggplotly(p, tooltip = c("x", "y", "fill"))
 
 
 ```
 
-En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de NO, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
-
+Esta gráfica es una versión mejorada de la anterior, en la cual aparecen representados los ictus que ha habido en cada provincia y en cada año, cada barra tiene 12 partes diferenciadas (una por mes) en las de los años 2020 en adelante; en el año 2019 aparecen menos ya que solo contamos con datos de octubre en adelante.
+Las barras están coloreadas de distintas tonalidades, corriespondiendose las oscuras a mayores concentraciones de NO y las claras a menores concentraciones de NO.
+Además pasando el cursor por las barras, gracias a la tecnología del paquete plotly, podemos ver podemos ver con que año y provincia se corresponde esa barra, la media de concentración de NO en ese mes y también el número total de ictus que han ocurrido ese mes.
 
 Gráfico que muestra la media de 03 (en una escala de colores) por provincia y mes:
 
@@ -442,6 +444,8 @@ calcula_media_sustancias_por_provincia_y_meses %>%
   labs(x = "", y = "Número ictus", fill = "Media de concentración de 03") +
   theme_classic()
 ```
+En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de O3, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
+
 
 ```{r}
 p1 <- calcula_media_sustancias_por_provincia_y_meses %>%
@@ -456,7 +460,13 @@ p1 <- calcula_media_sustancias_por_provincia_y_meses %>%
 ggplotly(p1, tooltip = c("x", "y", "fill"))
 ```
 
-En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de PM25, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
+Esta gráfica es una versión mejorada de la anterior, en la cual aparecen representados los ictus que ha habido en cada provincia y en cada año, cada barra tiene 12 partes diferenciadas (una por mes) en las de los años 2020 en adelante; en el año 2019 aparecen menos ya que solo contamos con datos de octubre en adelante.
+Las barras están coloreadas de distintas tonalidades, corriespondiendose las oscuras a mayores concentraciones de O3y las claras a menores concentraciones de O3.
+Además pasando el cursor por las barras, gracias a la tecnología del paquete plotly, podemos ver podemos ver con que año y provincia se corresponde esa barra, la media de concentración de NO en ese mes y también el número total de ictus que han ocurrido ese mes.
+
+
+
+
 
 
 Gráfico que muestra la media de PM2.5 (en una escala de colores) por provincia y mes:
@@ -474,36 +484,26 @@ calcula_media_sustancias_por_provincia_y_meses %>%
 En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de O3, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
 
 
-
-He tenido que buscar información sobre como hacer que se puedan usar 3 columnas para una mismas provincia:
-https://www.geeksforgeeks.org/pivot-longer-in-r/
-https://r-charts.com/es/ggplot2/facetas/
-https://rpubs.com/Edimer/689875
-
 ```{r}
-aire_con_num_ictus_long <- calcula_media_sustancias_por_provincia_y_meses %>%
-  distinct(provincia, num_ictus, avg_NO, avg_PM25, avg_O3) %>%
-  pivot_longer(cols = c(avg_NO, avg_PM25, avg_O3), 
-               names_to = "gas", 
-               values_to = "concentracion_gas")
+p2 <- calcula_media_sustancias_por_provincia_y_meses %>%
+  ggplot(aes(x = interaction(provincia, anyo), y = num_ictus, fill = avg_PM25)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  labs(x = "Provincia y Año", y = "Número de ictus", fill = "Media de concentración de PM2,5") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-ggplot(aire_con_num_ictus_long, 
-  aes(x = provincia, y = num_ictus, fill = concentracion_gas)) + 
-  geom_bar(stat = "identity", position = position_dodge(width = 0.8)) + # Separar las barras
-  scale_fill_gradient(low = "pink", high = "violet") + 
-  labs(x = "Provincias", y = "Número de ictus",fill="Concentración de gas") +
-  facet_wrap(~ gas, scales = "free_y") + 
-  theme_classic() 
-
-
-
-
-
-
+# Convierte el gráfico ggplot a plotly
+ggplotly(p2, tooltip = c("x", "y", "fill"))
 ```
 
-En esta imagen, aparecen 3 gráficas, en las que se muestran el número de ictus en cada provincia y la concentración de cada gas (NO, O3 y PM25) de un color más oscuro cuando es mayor y de un color más claro cuando es menor.
-Resumidamente, son las tres gráficas anteriores juntadas en una para una visualización más clara.
+Esta gráfica es una versión mejorada de la anterior, en la cual aparecen representados los ictus que ha habido en cada provincia y en cada año, cada barra tiene 12 partes diferenciadas (una por mes) en las de los años 2020 en adelante; en el año 2019 aparecen menos ya que solo contamos con datos de octubre en adelante.
+Las barras están coloreadas de distintas tonalidades, corriespondiendose las oscuras a mayores concentraciones de O3y las claras a menores concentraciones de O3.
+Además pasando el cursor por las barras, gracias a la tecnología del paquete plotly, podemos ver podemos ver con que año y provincia se corresponde esa barra, la media de concentración de NO en ese mes y también el número total de ictus que han ocurrido ese mes.
+Cabe destacar que en este caso en concreto, hay muchos valores NaN, que son los que aparecen de color gris.
+
+
+
 
 Como dato curioso, queremos ver si el día de la semana está relacionado con los ictus
 ```{r}
