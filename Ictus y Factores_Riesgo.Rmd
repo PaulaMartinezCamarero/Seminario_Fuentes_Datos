@@ -680,10 +680,13 @@ Por lo tanto,visualmente y falta de un estudio estadístico preciso no podemos d
 
 
 
-#Ictus y calidad del aire
 
 
+# Conclusiones
 
-#Conclusiones
+Queda demostrado que tanto la edad como el sexo influyen en el riesgo de sufrir un ictus, esto lo hemos comprobado realizando una regresión polinómica (edad) y un ANOVA (sexo), con sus correspondientes gráficas para hacerlo más visual.
 
+En cuanto a las sustancias del aire, podemos decir que la concentración de NO y la de PM2,5 si que se relacionan con la probabilidad de sufrir un ictus; mientras que la concentración de O3 no podemos llegar a saber si verdaderamente esta relacionada ya que lo que está comprobado es que el hecho de que haya elevadas concentraciones de NO aumenta la mortalidad por ictus en ese día, y nuestros datos no son de muertes sino de altas hospitalarias.
+
+En relación con la cantidad de centros, tampoco podemos determinar si el que haya más numero de centros reduce la probabilidad de sufrir un ictus
 
