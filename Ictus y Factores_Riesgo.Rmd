@@ -636,6 +636,7 @@ datos %>%
 
 
 Gráfica en la que representamos el número de habitantes por centro para cada provincia:
+
 ```{r}
 resultado
 resultado_sin_ult_fila=resultado[1:9,]
@@ -653,7 +654,9 @@ ggplot(mapping = aes(x = reorder(datos$pob.provincia, datos$num_ictus), y = resu
 
 ```
 
+
 Obtenemos una tabla que nos permite visualizar de manera numérica toda la información estudiada anteriormente:
+
 ```{r}
 
 tabla_centros <- tibble(Provincia=datos$pob.provincia,
@@ -664,6 +667,7 @@ tabla_centros <- tibble(Provincia=datos$pob.provincia,
                         Porcentaje_ictus_por_hab=(Numero_de_ictus/Poblacion_total_cyl)*100)
 tabla_centros
 ```
+
 Tras la realización de las tres gráficas anteriores para ver como están relacionados el número de ictus de cada provincia con el número de centros de desintoxicación que hay en las mismas, y el número de habitantes por centro de cada una de ellas, hemos llegado a las siguientes conclusiones:
 
   - Las poblaciones que cuentan con un menor número de habitantes (Ávila, Palencia, Soria y Zamora) son a su vez las que cuentan con un     menor porcentaje de ictus; esto seguramente pueda deberse a que por regla general en las ciudades pequeñas se suelen llevar mejores     habitos de vida.
@@ -688,5 +692,7 @@ Queda demostrado que tanto la edad como el sexo influyen en el riesgo de sufrir 
 
 En cuanto a las sustancias del aire, podemos decir que la concentración de NO y la de PM2,5 si que se relacionan con la probabilidad de sufrir un ictus; mientras que la concentración de O3 no podemos llegar a saber si verdaderamente esta relacionada ya que lo que está comprobado es que el hecho de que haya elevadas concentraciones de NO aumenta la mortalidad por ictus en ese día, y nuestros datos no son de muertes sino de altas hospitalarias.
 
-En relación con la cantidad de centros, tampoco podemos determinar si el que haya más numero de centros reduce la probabilidad de sufrir un ictus
+En relación con la cantidad de centros, tampoco podemos determinar si el que haya más numero de centros reduce la probabilidad de sufrir un ictus.
+
+.
 
