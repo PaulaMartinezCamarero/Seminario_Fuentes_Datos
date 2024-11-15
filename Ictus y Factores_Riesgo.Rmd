@@ -245,7 +245,7 @@ Mostramos de manera visual con un gráfico de barras sencillo la cantidad de hom
 ```{r}
 ictus_por_sexo%>%
   ggplot(mapping=aes(x=Sexo, y=num_ictus))+
-  geom_bar(stat="identity", fill="gold")+
+  geom_bar(stat="identity", fill="purple")+
   labs(x="Sexo",y="Numero de ictus")
 ```
 
@@ -408,7 +408,7 @@ calcula_media_sustancias_por_provincia_y_meses %>%
   distinct(provincia, .keep_all = TRUE) %>%  
   ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
   geom_bar(stat = "identity", aes(fill = avg_NO)) +
-  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  scale_fill_gradient(low = "turquoise", high = "blue" , space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "", y = "Número ictus", fill = "Media de concentración de NO") +
   theme_classic()
 
@@ -420,7 +420,7 @@ En esta gráfica aparecen representados los números de ictus por  provincia y l
 p <- calcula_media_sustancias_por_provincia_y_meses %>%
   ggplot(aes(x = interaction(provincia, anyo), y = num_ictus, fill = avg_NO)) + 
   geom_bar(stat = "identity") +
-  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  scale_fill_gradient(low = "turquoise", high = "blue", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "Provincia y Año", y = "Número de ictus", fill = "Media de concentración de NO") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
@@ -442,7 +442,7 @@ calcula_media_sustancias_por_provincia_y_meses %>%
   distinct(provincia, .keep_all = TRUE) %>%  
   ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
   geom_bar(stat = "identity", aes(fill = avg_O3)) +
-  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  scale_fill_gradient(low = "turquoise", high = "blue", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "", y = "Número ictus", fill = "Media de concentración de 03") +
   theme_classic()
 ```
@@ -453,7 +453,7 @@ En esta gráfica aparecen representados los números de ictus por  provincia y l
 p1 <- calcula_media_sustancias_por_provincia_y_meses %>%
   ggplot(aes(x = interaction(provincia, anyo), y = num_ictus, fill = avg_O3)) + 
   geom_bar(stat = "identity") +
-  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  scale_fill_gradient(low = "turquoise", high = "blue", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "Provincia y Año", y = "Número de ictus", fill = "Media de concentración de O3") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
@@ -478,7 +478,7 @@ calcula_media_sustancias_por_provincia_y_meses %>%
   distinct(provincia, .keep_all = TRUE) %>%  
   ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
   geom_bar(stat = "identity", aes(fill = avg_PM25)) +
-  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  scale_fill_gradient(low = "turquoise", high = "blue", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "", y = "Número ictus", fill = "Media de concentración de PM2.5") +
   theme_classic()
 
@@ -490,7 +490,7 @@ En esta gráfica aparecen representados los números de ictus por  provincia y l
 p2 <- calcula_media_sustancias_por_provincia_y_meses %>%
   ggplot(aes(x = interaction(provincia, anyo), y = num_ictus, fill = avg_PM25)) + 
   geom_bar(stat = "identity") +
-  scale_fill_gradient(low = "yellow", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  scale_fill_gradient(low = "turquoise", high = "blue", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "Provincia y Año", y = "Número de ictus", fill = "Media de concentración de PM2,5") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
@@ -515,7 +515,7 @@ numero_ictus_dia_semana <-aire_con_ictus_resumen %>%
             
 numero_ictus_dia_semana %>%
   ggplot(mapping=aes(x = dia_semana, y = num_ictus)) + 
-  geom_bar(stat = "identity", fill="purple") +
+  geom_bar(stat = "identity", fill="orchid") +
   labs(x = "Días de la semana", y="Número de ictus") +
   theme_classic()
 
@@ -582,7 +582,7 @@ Lo lógico es esperar que en las provincias que cuentan con un menor número de 
 ```{r}
 numero_ictus <- ictus_por_provincia(Provincias)
 df <- as.data.frame(numero_ictus)
-df$prov <-c("Avila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora")
+
 
 
 pob_prov_y_total <- poblacion_cyl%>%
@@ -596,7 +596,7 @@ arrange(.data=ordenadas,(ordenadas$provincia))
 
 datos <- data.frame(pob=pob_cyl_sin_ult_fila,
                     centros= arrange(.data=ordenadas,(ordenadas$provincia)),
-                    num_ictus=df)
+                    num_ictus=df$numero_ictus)
 str(datos)
 datos
 
@@ -604,11 +604,25 @@ datos
 
 ```
 
+Gráfica en la que aparece representado el número de centros por provincia:
+
+```{r}
+datos%>%
+   ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus), y = centros.n)) +
+  geom_bar(stat = "identity",fill="blue") +
+  labs(x = "Provincias", y = "Número de centros") +
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
+
+  
+```
+
 
 Gráfica de barras en la que se representa el número de ictus en cada provincia, coloreando de un color más fuerte las barras con los más centros de desintoxicación.
 ```{r}
 datos %>%
-  ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus.numero_ictus), y = num_ictus.numero_ictus)) +
+  ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus), y = num_ictus)) +
   geom_bar(stat = "identity", aes(fill = centros.n)) +
   scale_fill_gradient(low = "peachpuff", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "Provincias", y = "Número de ictus", fill = "Centros detox") +
@@ -621,20 +635,6 @@ datos %>%
 ```
 
 
-Gráfica en la que aparece representado el número de centros por provincia:
-```{r}
-datos%>%
-   ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus.numero_ictus), y = centros.n)) +
-  geom_bar(stat = "identity",fill="blue") +
-  labs(x = "Provincias", y = "Número de centros") +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
-
-  
-```
-
-
 Gráfica en la que representamos el número de habitantes por centro para cada provincia:
 ```{r}
 resultado
@@ -643,7 +643,7 @@ str(resultado_sin_ult_fila)
 
 
 
-ggplot(mapping = aes(x = reorder(datos$pob.provincia, datos$num_ictus.numero_ictus), y = resultado_sin_ult_fila$hab_centro)) +
+ggplot(mapping = aes(x = reorder(datos$pob.provincia, datos$num_ictus), y = resultado_sin_ult_fila$hab_centro)) +
   geom_bar(stat = "identity", fill = "green") +
   labs(x = "Provincias", y = "Número habitantes por centro") +
   scale_y_continuous(expand = expansion(mult = c(0, .1))) +
@@ -657,7 +657,7 @@ Obtenemos una tabla que nos permite visualizar de manera numérica toda la infor
 ```{r}
 
 tabla_centros <- tibble(Provincia=datos$pob.provincia,
-                        Numero_de_ictus=datos$num_ictus.numero_ictus,
+                        Numero_de_ictus=datos$num_ictus,
                         Poblacion_total_cyl=pob_cyl_sin_ult_fila$Poblacion_total,
                         Numero_centros=datos$centros.n,
                         Habitantes_por_centro=resultado_sin_ult_fila$hab_centro,
