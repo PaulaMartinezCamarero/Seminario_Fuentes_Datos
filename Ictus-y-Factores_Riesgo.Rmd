@@ -26,7 +26,7 @@ load("OUTPUT/objetos_actuales.Rdata")
 ```
 
 # Importación de paquetes necesarios
-```{r, message=FALSE, warning=FALSE}
+```{r}
 library(tidyjson)
 library(rjson)
 library(tidyverse)
@@ -34,7 +34,7 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 library(readr)
-#library(plotly)
+library(plotly)
 ```
 
 
