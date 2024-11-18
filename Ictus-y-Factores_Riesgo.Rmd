@@ -17,11 +17,12 @@ Link del repositorio de github [aquí](https://github.com/PaulaMartinezCamarero/
 
 
 ```{r,eval =FALSE}
-#antes de salir
-save.image(file="objetos_actuales.Rdata")
 
 #cuando te metes
 load("OUTPUT/objetos_actuales.Rdata")
+
+#antes de salir
+save.image(file="objetos_actuales.Rdata")
 
 
 ```
@@ -116,10 +117,20 @@ centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde
 
 ## Importamos la función que cuenta el número de ictus por provincia:
 
+Está función se creo antes de conocer tuberías, la función group_by y summarise con las cuales podemos obetener el mismo resultado pero lo dejaremos a modo comparativo, para ver las ventajas y eficiencia de trabajar con estas estructuras.
+
 ```{r}
 source("INPUT/functions/ictus_por_provincia.R")
 
-              
+```
+
+Aquí vemos el ejemplo trabajando con dichas metodologías
+
+
+```{r, eval=FALSE}
+prov_e_ictus <- Provincias%>%
+  group_by(Provincia)%>%
+  summarise(numero_ictus=n())
 ```
 
 
@@ -140,6 +151,8 @@ altas_hospitalarias_ictus %>%
 
 ```
 
+Vemos que en fields tenemos un objeto con los datos que queremos extraer, por lo tanto hacemos:
+
 ```{r}
 altas_hospitalarias_ictus %>%
   enter_object(fields) %>%
@@ -155,7 +168,7 @@ altas_hosp_ictus_tab <- altas_hospitalarias_ictus%>%
   spread_all()%>%
   enter_object("fields")%>%
   spread_all()
-altas_hosp_ictus_tab
+#altas_hosp_ictus_tab
 ```
 
 Obtener el número de casos por provincias para empezar a relacionarlo con los siguientes objetivos
@@ -167,27 +180,19 @@ Provincias$Provincia <- ifelse(Provincias$Provincia == "Ávila", "Avila", Provin
 #Provincias
 ```
 
-OBtener numero de ictus
+Obtenemos el número de ictus por provincia
 ```{r}
 prov_e_ictus <- Provincias%>%
   group_by(Provincia)%>%
   summarise(numero_ictus=n())
 ```
 
-```{r}
-ictus_por_provincia(Provincias$Provincia)
-df_ictus_por_provincia <- data.frame(provincia=prov_e_ictus$Provincia,
-                n_ictus=prov_e_ictus$numero_ictus)
-df_ictus_por_provincia
-```
-
-
-Calculamos el número de personas que han sufrido un ictus para cada edad, para ello obtenemos el atributo edad de cada una de las personas.Además lo haremos de dos maneras:
+Calculamos el número de personas que han sufrido un ictus para cada edad, para ello obtenemos el atributo edad de cada una de las personas. Además, lo haremos de dos maneras:
 ```{r}
 edades_total <- altas_hosp_ictus_tab %>%
   rename(Edad = edad) %>%         
   select(Edad)
-edades_total
+#edades_total
 
 ```
 
@@ -197,12 +202,12 @@ Importamos función que cuenta el total para cada una de las edades:
 
 ### Primera manera (orientada en programación) para obtener el numero de casos por edad
 
-  Se trata de una función programada más desde un punto de vista de programación, más adelante mostraremos como hacerlo desde un enfoque en el manejo de datos como se requiere en la asignatura y por ende, la gran mayoría de código quedará implementado de la segunda manera. 
+Se trata de una función programada desde un punto de vista de programación, más adelante mostraremos como hacerlo desde un enfoque en el manejo de datos como se requiere en la asignatura y por ende, la gran mayoría de código quedará implementado de la segunda manera. 
   
 ```{r}
 source("INPUT/functions/total_por_edad.R")
 resultados_edad <- total_por_edad(edades_total)
-print(resultados_edad)
+resultados_edad
 
 ```
 
@@ -213,7 +218,8 @@ ictus_por_edad <- edades_total%>%
   summarise(num_ictus=n())
 ictus_por_edad
 ```
-
+Podemos observar que de esta forma obtenemos menos filas, que de la primera forma, esto se debe a que en esta segunda tabla nos quita las personas con las edades que no han sufrido un ictus. 
+ 
 Realizamos una regresión polinómica:
 ```{r}
 regresion_edad_ictus <- lm(num_ictus~poly(Edad,3),data=ictus_por_edad)
