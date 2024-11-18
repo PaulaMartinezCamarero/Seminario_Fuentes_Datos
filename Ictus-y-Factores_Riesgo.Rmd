@@ -16,12 +16,13 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE)
 Link del repositorio de github [aquí](https://github.com/PaulaMartinezCamarero/Seminario_Fuentes_Datos)
 
 
-```{r}
+```{r,eval =FALSE}
 #antes de salir
 save.image(file="objetos_actuales.Rdata")
 
 #cuando te metes
 load("OUTPUT/objetos_actuales.Rdata")
+
 
 ```
 
@@ -94,13 +95,13 @@ Este último proviene del **Instituto Nacional de Estadística (INE)**.
 
 ```{r}
 altas_hospitalarias_ictus <- fromJSON(file="INPUT/data/altas_hospitalarias_ictus.json")
-altas_hospitalarias_ictus
+#altas_hospitalarias_ictus
 ```
 
 ## Importamos los datos de la calidad del aire:
 ```{r}
 calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
-calidad_aire
+#calidad_aire
 
 ```
 
@@ -108,7 +109,7 @@ calidad_aire
 ## Importamos los datos de los centros de desintoxicación:
 ```{r}
 centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde.json")
-centros_servicios_saisde
+#centros_servicios_saisde
 ```
 
 
@@ -117,10 +118,7 @@ centros_servicios_saisde
 
 ```{r}
 source("INPUT/functions/ictus_por_provincia.R")
-ictus_por_provincia(Provincias$Provincia)
-df_ictus_por_provincia <- data.frame(provincia=datos$pob.provincia,
-                n_ictus=datos$num_ictus.numero_ictus)
-df_ictus_por_provincia
+
               
 ```
 
@@ -158,6 +156,29 @@ altas_hosp_ictus_tab <- altas_hospitalarias_ictus%>%
   enter_object("fields")%>%
   spread_all()
 altas_hosp_ictus_tab
+```
+
+Obtener el número de casos por provincias para empezar a relacionarlo con los siguientes objetivos
+```{r}
+Provincias <- altas_hosp_ictus_tab%>%
+  rename(Provincia=fields.provincia)%>%
+  select(Provincia)
+Provincias$Provincia <- ifelse(Provincias$Provincia == "Ávila", "Avila", Provincias$Provincia)
+#Provincias
+```
+
+OBtener numero de ictus
+```{r}
+prov_e_ictus <- Provincias%>%
+  group_by(Provincia)%>%
+  summarise(numero_ictus=n())
+```
+
+```{r}
+ictus_por_provincia(Provincias$Provincia)
+df_ictus_por_provincia <- data.frame(provincia=prov_e_ictus$Provincia,
+                n_ictus=prov_e_ictus$numero_ictus)
+df_ictus_por_provincia
 ```
 
 
@@ -274,15 +295,6 @@ Tras realizar el anova(analisis de la varianza) con la edad como variable numér
 
 
 
-
-Obtener el número de casos por provincias para empezar a relacionarlo con los siguientes objetivos
-```{r}
-Provincias <- altas_hosp_ictus_tab%>%
-  rename(Provincia=fields.provincia)%>%
-  select(Provincia)
-Provincias$Provincia <- ifelse(Provincias$Provincia == "Ávila", "Avila", Provincias$Provincia)
-Provincias
-```
 
 
 
