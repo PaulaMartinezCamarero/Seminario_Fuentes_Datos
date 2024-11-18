@@ -77,12 +77,15 @@ Contamos con 1 set de datos en tipo *.csv*.
 Este formato, **(Comma Separated Values)** son archivos de texto que en pricipio deberían estar con los caracteres separados por comas, aunque en algunos de nuestros datos se usa punto y coma en lugar de la coma.
 
 Este es nuestro archivo *.csv*.:
+
   -[calidad_aire](https://servicios.jcyl.es/esco/cargarFrmDatosHistoricos.action)
   
 También contamos con dos sets de datos *.json*.**(JavaScript Object Notation)** es un formato para almacenar e intercambiar datos.
 
 Estos son nuestros archivos *.json*.:
+
   -[altas_hospitalarias_ictus](https://datos.gob.es/es/catalogo/a07002862-altas-hospitalarias-con-diagnostico-de-ictus)
+  
   -[centros_servicios_saisde](https://servicios.ine.es/wstempus/jsCache/es/DATOS_TABLA/65334?tip=AM&)
 Este último proviene del **Instituto Nacional de Estadística (INE)**.
 
@@ -678,9 +681,7 @@ datos%>%
    ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus), y = centros.n)) +
   geom_bar(stat = "identity",fill="blue") +
   labs(x = "Provincias", y = "Número de centros") +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
+  theme_classic()
 
   
 ```
@@ -691,13 +692,10 @@ Gráfica de barras en la que se representa el número de ictus en cada provincia
 datos %>%
   ggplot(mapping = aes(x = reorder(pob.provincia, num_ictus), y = num_ictus)) +
   geom_bar(stat = "identity", aes(fill = centros.n)) +
-  scale_fill_gradient(low = "peachpuff", high = "red", space = "Lab", na.value = "grey50", guide = "colourbar") +
+  scale_fill_gradient(low = "peachpuff", high = "red") +
   labs(x = "Provincias", y = "Número de ictus", fill = "Centros detox") +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
-
-
+  theme_classic() 
+  
 
 ```
 
@@ -714,10 +712,8 @@ str(resultado_sin_ult_fila)
 ggplot(mapping = aes(x = reorder(datos$pob.provincia, datos$num_ictus), y = resultado_sin_ult_fila$hab_centro)) +
   geom_bar(stat = "identity", fill = "green") +
   labs(x = "Provincias", y = "Número habitantes por centro") +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
-
+  theme_classic() 
+  
 
 ```
 
@@ -726,14 +722,50 @@ Obtenemos una tabla que nos permite visualizar de manera numérica toda la infor
 
 ```{r}
 
-tabla_centros <- tibble(Provincia=datos$pob.provincia,
-                        Numero_de_ictus=datos$num_ictus,
-                        Poblacion_total_cyl=pob_cyl_sin_ult_fila$Poblacion_total,
-                        Numero_centros=datos$centros.n,
+tabla_centros <- tibble(Provincia=datos$pob.provincia,                     
+                            Numero_de_ictus=datos$num_ictus,                                          Poblacion_total_cyl=pob_cyl_sin_ult_fila$Poblacion_total,
+                            Numero_centros=datos$centros.n,
                         Habitantes_por_centro=resultado_sin_ult_fila$hab_centro,
                         Porcentaje_ictus_por_hab=(Numero_de_ictus/Poblacion_total_cyl)*100)
 tabla_centros
 ```
+```{r}
+# Calcular métricas adicionales
+tabla_metricas <- tabla_centros %>%
+  mutate(tasa_incidencia = (Numero_de_ictus / Poblacion_total_cyl) * 1000,
+         densidad_centros = (Numero_centros / Poblacion_total_cyl) * 10000)
+
+```
+
+```{r}
+ggplot(tabla_metricas, aes(x = Numero_centros, y = Numero_de_ictus)) +
+  geom_point() +
+  geom_smooth() +
+  labs(title = "Relación entre numero de centros y numero de ictus",
+       x = "Centros s",
+       y = "Número de ictus ")
+```
+```{r}
+modelo_regresion_polinomico <- lm(
+  Numero_de_ictus ~ poly(Numero_centros,4),
+  data = tabla_metricas
+)
+summary(modelo_regresion_polinomico)
+```
+https://fhernanb.github.io/libro_regresion/predict.html
+```{r}
+tabla_predicciones <- data.frame(tabla_metricas, predicciones = predict(modelo_regresion))
+
+# Visualización del impacto
+ggplot(tabla_predicciones, aes(x = Habitantes_por_centro, y = tasa_incidencia)) +
+  geom_point() +
+  geom_line(aes(y = predicciones), color = "blue") +
+  labs(title = "Impacto estimado de centros detox en la tasa de ictus",
+       x = "Habitantes por centro",
+       y = "Tasa de Ictus por 1,000 habitantes")
+```
+
+
 
 Tras la realización de las tres gráficas anteriores para ver como están relacionados el número de ictus de cada provincia con el número de centros de desintoxicación que hay en las mismas, y el número de habitantes por centro de cada una de ellas, hemos llegado a las siguientes conclusiones:
 
