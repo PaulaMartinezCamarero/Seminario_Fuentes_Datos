@@ -1,6 +1,6 @@
 ---
-title: "Ictus y Factores_Riesgo"
-author: "Andrés Estévez, Paula Martínez"
+title: "Ictus y Factores de Riesgo"
+author: "Andrés Estévez Ubierna y Paula Martínez Camarero"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -92,11 +92,11 @@ Estos son nuestros archivos *.json*.:
   
   
   -[centros_servicios_saisde](https://servicios.ine.es/wstempus/jsCache/es/DATOS_TABLA/65334?tip=AM&)
+
 Este último proviene del **Instituto Nacional de Estadística (INE)**.
 
 
   
-
 
 ## 4.3 Importación de datos
 
@@ -113,6 +113,7 @@ calidad_aire <- read_csv("INPUT/data/calidad_aire.csv")
 #calidad_aire
 
 ```
+Esta tabla decidimos no mostrarla porque es tan grande que no deja renderizarlo.
 ```{r}
 #datatable(calidad_aire)
 ```
@@ -186,17 +187,24 @@ altas_hosp_ictus_tab <- altas_hospitalarias_ictus%>%
 #altas_hosp_ictus_tab
 ```
 
+
 ```{r}
 #datatable(altas_hosp_ictus_tab)
 ```
+Debido a que esta tabla también es muy grande tampoco la mostramos con el paquete: library(DT).
+Debido a que esta tabla también es muy grande tampoco la mostramos con el paquete: library(DT).Debido a que esta tabla también es muy grande tampoco la mostramos con el paquete: library(DT).Debido a que esta tabla también es muy grande tampoco la mostramos con el paquete: library(DT).
 
 Obtener el número de casos por provincias para empezar a relacionarlo con los siguientes objetivos.
 
 ```{r}
 Provincias <- altas_hosp_ictus_tab%>%
   rename(Provincia=fields.provincia)%>%
-  select(Provincia)
-Provincias$Provincia <- ifelse(Provincias$Provincia == "Ávila", "Avila", Provincias$Provincia)
+  select(Provincia)%>%
+  mutate(Provincia=case_when(
+    Provincia=="Ávila"~"Avila",
+    .default = Provincia
+  ))
+
 #Provincias
 ```
 
@@ -224,6 +232,7 @@ edades_total <- altas_hosp_ictus_tab %>%
 ```{r}
 #datatable(edades_total)
 ```
+Esta tabla hemos decido no mostrarla puesto que es muy grande.
 
  
  
@@ -236,8 +245,6 @@ Se trata de una función programada desde un punto de vista de programación, m�
 ```{r}
 source("INPUT/functions/total_por_edad.R")
 resultados_edad <- total_por_edad(edades_total)
-
-
 ```
 
 ```{r}
@@ -275,9 +282,7 @@ En los resultados del modelor polinomial vemos que la edad es un factor estadís
 ggplot(data=ictus_por_edad, aes(x=Edad,y=num_ictus))+
   geom_point()+
   geom_smooth()+
-  labs(x="Edad (años)",
-       y="Número de ictus",
-       title="Regresión polinómica edad-ictus")
+  labs(x="Edad (años)",y="Número de ictus",title="Regresión polinómica edad-ictus")
 ```
 
 Se ve claramente como a edades bajas el número deictus es muy reducido pero a partir de la barrera de los 45-50 empieza a subir drásticamente hasta los 75-88 que empieza a disminuir ya que a estas edades comienza a disminuir la tasa de supervivencia ya que las personas fallecen por otras patologías o por causas naturales.
@@ -403,19 +408,25 @@ datatable(media_factores_aire)
 
 Necesitamos cambiar el formato de la fecha, para así poder trabajar y agrupar datos que contienen fechas, ya que el paquete lubridate permite hacer lo que necesitamos con las fechas, en formato fecha.
 
+Además, tenemos que usar un case_when para que Ávila pase a llamarse Avila para luego poder hacer diferentes operaciones necesarias.
+
 ```{r}
 altas_hosp_ictus_fecha_bien <- altas_hosp_ictus_tab %>%
   mutate(Fecha = ymd_hms(fields.fecha_de_ingreso))%>%
   mutate(mes= month(fields.fecha_de_ingreso))%>%
-  mutate(anyo = year(fields.fecha_de_ingreso))
+  mutate(anyo = year(fields.fecha_de_ingreso))%>%
+  mutate(provincia=case_when(
+    provincia=="Ávila"~"Avila",
+    .default = provincia
+  ))
 
-altas_hosp_ictus_fecha_bien$provincia <- ifelse(altas_hosp_ictus_fecha_bien$provincia == "Ávila", "Avila",altas_hosp_ictus_fecha_bien$provincia)
+
 ```
 
 ```{r}
 #datatable(altas_hosp_ictus_fecha_bien)
 ```
-
+Esta tabla no la mostramos tampoco debido a su gran tamaño.
 
 
 Juntamos ambas tablas con sus atributos comunes que nos son de interes (mes, año y provincia)
@@ -432,7 +443,7 @@ aire_con_ictus_resumen <- aire_con_ictus%>%
 ```{r}
 #datatable(aire_con_ictus_resumen)
 ```
-
+Esta tabla tampoco la mostramos debido a su gran tamaño.
 
 
 Calculamos la media de cada una de las sustancias (NO, O3 y PM25) agrupadas por provincia, año y mes. Además, contamos el número de ictus que hay para cada uno de ellos.
@@ -450,6 +461,7 @@ calcula_media_sustancias_por_provincia_y_meses <-aire_con_ictus_resumen %>%
 ```{r}
 datatable(calcula_media_sustancias_por_provincia_y_meses)
 ```
+En esta tabla aparece representado la media de cada una de las sustancias del aire en cada provincia por mes y año.
 
 
 Estudios confirman que "Niveles más elevados de NO el día de ingreso conlleva un aumento del riesgo de mortalidad debido a ictus"
@@ -677,27 +689,30 @@ Por lo leído y descrito en uno de los artículos, niveles altos de NO el día d
 Importamos los datos de los centros de desintoxicación.
 
 Visionamos los datos y vemos que con hacer un spread_all podemos obtener lo que necesitamos para nuestro trabajo.
-```{r}
+```{r,eval=FALSE}
 
-#spread_all(centros_servicios_saisde)
+spread_all(centros_servicios_saisde)
 
 ```
 
 
 ```{r}
+
 Centros <- centros_servicios_saisde %>%
   spread_all() %>%
-  mutate(fields.provincia = ifelse(fields.provincia == "Ávila", "Avila", fields.provincia)) %>%
+  mutate(fields.provincia=case_when(
+    fields.provincia=="Ávila"~"Avila",
+    .default = fields.provincia))%>%
   count(provincia = fields.provincia) %>%
   as.data.frame()
+Centros
 
 
-ordenadas <- arrange(Centros,Centros$provincia)
 ```
 
 ```{r}
 #datatable(Centros)
-datatable(ordenadas)
+
 ```
 
 
@@ -715,7 +730,7 @@ Para tener una referencia entre los centros de desintoxicación por provincia co
 
 
 ```{r}
-pob_centros <- full_join(poblacion_cyl,ordenadas)
+pob_centros <- full_join(poblacion_cyl,Centros)
 tabla <- pob_centros%>%
   select(provincia,Poblacion_total,n)
 source("INPUT/functions/divide.R")
@@ -747,10 +762,10 @@ datatable(pob_prov_y_total )
 pob_cyl_sin_ult_fila <- pob_prov_y_total [1:9,]
 datatable(pob_cyl_sin_ult_fila)
 
-arrange(.data=ordenadas,(ordenadas$provincia))
+arrange(.data=Centros,(Centros$provincia))
 
 datos <- data.frame(pob=pob_cyl_sin_ult_fila,
-                    centros= arrange(.data=ordenadas,(ordenadas$provincia)),
+                    centros= arrange(.data=Centros,(Centros$provincia)),
                     num_ictus=df$numero_ictus)
 
 datatable(datos)
