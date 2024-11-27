@@ -9,9 +9,11 @@ output:
 
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE)
 ```
+![Imagen ictus](./INPUT/images/ictus.png)
 
 Link del repositorio de github [aquí](https://github.com/PaulaMartinezCamarero/Seminario_Fuentes_Datos)
 
@@ -403,6 +405,9 @@ media_factores_aire <-calidad_aire%>%
 ```{r}
 datatable(media_factores_aire)
 ```
+Probablemente, al igual que nosotros antes de realizar este trabajo no sepáis lo que es la sustancia PM2,5, esta esun conjunto de partículas que se encuentran en suspension aerodinámica cuyo diámetro es inferior a 2,5 micras.
+
+![Imagen de PM2,5](INPUT/images/pm25.jpg)
 
 ### 5.2.1 Cambio formato fecha:
 
