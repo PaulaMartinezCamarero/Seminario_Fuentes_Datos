@@ -541,12 +541,20 @@ Realizamos una faceta para mostrar lo explicado anteriormente:
 
 ```{r}
 tabla_con_columna_con_todos_gases %>%
-  ggplot(aes(x=anyo, y=media_de_concentracion))+
+  ggplot(aes(x=media_de_concentracion, y=media))+
   geom_point(aes(colour = factor(provincia)))+
   geom_smooth(method = "lm", aes(colour = factor(provincia)))+
   facet_wrap(facets=vars(gases), nrow=1)+ 
   labs(x="Año",y="Media de concentración", title="Faceta de las sustancias del aire", colour="Provincias")
-  
+
+
+tabla_con_columna_con_todos_gases%>%
+  ggplot(aes(x=gases, y=media_de_concentracion))+
+  geom_point(aes(colour=factor(anyo)))+
+  facet_wrap(facets=vars(provincia,anyo), nrow =5, ncol = 9)+
+  labs(x="Media de concentración", y="Provincias", colour="Sustancias", title = "Concentración de las distintas sustancias por provincia y año")
+
+                               
 ```
 
 
@@ -572,15 +580,15 @@ En esta gráfica aparecen representados los números de ictus por  provincia y l
 
 ```{r}
 p <- calcula_media_sustancias_por_provincia_y_meses %>%
-  ggplot(aes(x = reorder(factor(provincia),factor(anyo)), y = num_ictus)) + 
-  geom_bar(stat = "identity",aes(fill = avg_NO)) +
+  ggplot(aes(x = interaction(provincia, anyo), y = num_ictus, fill = avg_NO)) + 
+  geom_bar(stat = "identity") +
   scale_fill_gradient(low = "turquoise", high = "blue", space = "Lab", na.value = "grey50", guide = "colourbar") +
   labs(x = "Provincia y Año", y = "Número de ictus", fill = "Media de concentración de NO") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-p
+
 # Convierte el gráfico ggplot a plotly
-ggplotly(p, tooltip = c("x", "y", "fill"))
+ggplotly(p1, tooltip = c("x", "y", "fill"))
 
 
 ```
@@ -850,7 +858,7 @@ ggplot(tabla_metricas, aes(x = Numero_centros, y = Numero_de_ictus)) +
 ```
 ```{r}
 modelo_regresion_polinomico <- lm(
-  Numero_de_ictus ~ poly(Numero_centros,4),
+  Numero_centros ~ Porcentaje_ictus_por_hab,
   data = tabla_metricas
 )
 summary(modelo_regresion_polinomico)
