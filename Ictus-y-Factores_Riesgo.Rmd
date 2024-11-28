@@ -48,9 +48,11 @@ library(DT)
 
 En nuestro seminario vamos a estudiar las altas hospitalarias por ictus, en los diferentes hospitales de Castilla y León durante casi cinco años, y como estas, están relacionadas con distintos factores de riesgo.
 
-Lo primero de todo, explicar que los factores de riesgo son características o circunstancias que atentan contra el equilibrio, contra la salud, y que causan enfermedades o muerte. [senado1999factores]
+Lo primero de todo, explicar que los factores de riesgo son características o circunstancias que atentan contra el equilibrio, contra la salud, y que causan enfermedades o muerte. [senado1999factores](http://scielo.sld.cu/scielo.php?pid=s0864-21251999000400018&script=sci_arttext)
 
-Durante el desarrollo de nuestro seminario vamos a trabajar con datos de dos factores de riesgo, los cuales son: la calidad del aire y valorar si los centros de desintoxicación los podemos considerar como factor de riesgo  o como factor de prevención de sufrir un ictus.
+Durante el desarrollo de nuestro seminario vamos a trabajar con datos de dos factores de riesgo, los cuales son: la edad, el sexo, la calidad del aire y valorar si los centros de desintoxicación los podemos considerar como factor de riesgo  o como factor de prevención de sufrir un ictus.
+
+En cuanto al sexo esta demostrado que el ictus tiene un mayor impacto en hombres. 
 
 La calidad del aire es quizas un factor de riesgo del ictus, quizás poco conocido, pero estudios confirman que "Niveles más elevados de NO el día de ingreso conlleva un aumento del riesgo de mortalidad" [suarez2024influencia]
 
@@ -853,6 +855,21 @@ En relación con la calidad del aire, nos gustaría destacar que para poder obte
 
 
 En relación con la cantidad de centros, no podemos determinar si el que haya más numero de centros reduce la probabilidad de sufrir un ictus o la aumenta.
+
+
+# 7. Referencias
+
+Para la realización de nuestro seminario, nos hemos basado en el [repositorio del Tema 5](https://github.com/ajcanepa/PRACTICA_TEMA5) y en estos artículos y páginas web:
+
+1. [En relación con el O3](https://www.immedicohospitalario.es/noticia/37764/asocian-contaminacion-por-ozono-con-incremento-de-hospitalizaciones-p.html)
+
+2. [¿Qué son los factores de riesgo?](http://scielo.sld.cu/scielo.php?pid=s0864-21251999000400018&script=sci_arttext)
+
+3. [En relación con PM2,5](https://dkv.es/corporativo/blog-360/medioambiente/contaminacion/ictus)
+
+4. [En relación con la edad y el sexo en los ictus](https://neurologia.com/articulo/2018254)
+
+5. [En relación con el NO](https://digibuo.uniovi.es/dspace/handle/10651/72686)
 
 
 
