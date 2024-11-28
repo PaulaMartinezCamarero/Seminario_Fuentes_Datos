@@ -15,7 +15,8 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE)
 ```
 ![Imagen ictus](./INPUT/images/ictus.png)
 
-Link del repositorio de github [aquí](https://github.com/PaulaMartinezCamarero/Seminario_Fuentes_Datos)
+
+**Link del repositorio de github [aquí](https://github.com/PaulaMartinezCamarero/Seminario_Fuentes_Datos)**
 
 
 ```{r,eval =FALSE}
@@ -77,7 +78,7 @@ Los datos han sido recabados de [Datos abiertos del gobierno de españa](https:/
 **Descripción:**
 
 Contamos con 1 set de datos en tipo *.csv*.
-Este formato, **(Comma Separated Values)** son archivos de texto que en pricipio deberían estar con los caracteres separados por comas, aunque en algunos de nuestros datos se usa punto y coma en lugar de la coma.
+Este formato, **(Comma Separated Values)** son archivos de texto que en pricipio deberían estar con los caracteres separados por comas, aunque en algunas ocasiones se usa punto y coma u otros caracteres en lugar de la coma.
 
 Este es nuestro archivo *.csv*.:
 
@@ -128,7 +129,7 @@ centros_servicios_saisde <- fromJSON(file = "INPUT/data/centros_servicios_saisde
 ```
 
 
-**Importamos la función que cuenta el número de ictus por provincia:**
+### 4.3.4 Importamos la función que cuenta el número de ictus por provincia:
 
 
 
@@ -193,9 +194,9 @@ altas_hosp_ictus_tab <- altas_hospitalarias_ictus%>%
 #datatable(altas_hosp_ictus_tab)
 ```
 Debido a que esta tabla también es muy grande tampoco la mostramos con el paquete: library(DT).
-Debido a que esta tabla también es muy grande tampoco la mostramos con el paquete: library(DT).Debido a que esta tabla también es muy grande tampoco la mostramos con el paquete: library(DT).Debido a que esta tabla también es muy grande tampoco la mostramos con el paquete: library(DT).
 
-Obtener el número de casos por provincias para empezar a relacionarlo con los siguientes objetivos.
+
+Selecionamos las provincias, realizando con case_when el cambio de Ávila por Avila para poder trabajar con esa misma nomenclatura para todos.
 
 ```{r}
 Provincias <- altas_hosp_ictus_tab%>%
@@ -237,9 +238,9 @@ Esta tabla hemos decido no mostrarla puesto que es muy grande.
 
  
  
-Importamos función que cuenta el total para cada una de las edades:
+**Importamos función que cuenta el total para cada una de las edades:**
 
-**Primera manera (orientada en programación) para obtener el numero de casos por edad**
+*1. Primera manera (orientada en programación) para obtener el numero de casos por edad*
 
 Se trata de una función programada desde un punto de vista de programación, más adelante mostraremos como hacerlo desde un enfoque en el manejo de datos como se requiere en la asignatura y por ende, la gran mayoría de código quedará implementado de la segunda manera. 
   
@@ -253,7 +254,7 @@ datatable(resultados_edad)
 ```
 
 
-**Segunda manera (orientada al manejo de datos) para obtener el numero de casos por edad**
+*2.Segunda manera (orientada al manejo de datos) para obtener el numero de casos por edad*
 ```{r}
 ictus_por_edad <- edades_total%>%
   group_by(Edad)%>%
@@ -275,7 +276,7 @@ summary(regresion_edad_ictus)
 ```
 
 Hemos decidido realizar una regresión polinómica ya que una lineal no se ajusta exactamente lo que queremos y nos daba un R^2 muy bajo, en cambio la polinómica nos da un R^2 de 0.7994 lo cual nos indica que no es un mal modelo. Esto sucede porque en la regresión lineal debe crecer linealmente hasta el infinito pero a ciertas edades es biologicamente imposible que aumente ya que los humanos tenemos una vida limitada.
-En los resultados del modelor polinomial vemos que la edad es un factor estadísticamente siginificativo.
+En los resultados del modelo polinomial vemos que la edad es un factor estadísticamente siginificativo.
 
 
 ### 5.1.2 Gráfico que explica el modelo:
@@ -287,7 +288,7 @@ ggplot(data=ictus_por_edad, aes(x=Edad,y=num_ictus))+
   labs(x="Edad (años)",y="Número de ictus",title="Regresión polinómica edad-ictus")
 ```
 
-Se ve claramente como a edades bajas el número deictus es muy reducido pero a partir de la barrera de los 45-50 empieza a subir drásticamente hasta los 75-88 que empieza a disminuir ya que a estas edades comienza a disminuir la tasa de supervivencia ya que las personas fallecen por otras patologías o por causas naturales.
+Se ve claramente como a edades bajas el número de ictus es muy reducido pero a partir de la barrera de los 45-50 empieza a subir drásticamente hasta los 75-88 que empieza a disminuir, ya que a estas edades comienza a decaer la tasa de supervivencia ya que las personas fallecen por otras patologías o por causas naturales.
 
 
 Ahora vamos a obtener el número de hombres y mujeres para ver si el sexo influye en la cantidad de ictus
@@ -307,7 +308,7 @@ total_sexo <- sexototal$Sexo
 ```
 
 
-**Basado en métodos de programación:**
+*Basado en métodos de programación:*
 
 Llamamos a la función que nos cuenta el número de hombres y de mujeres que han sufrido un ictus:
 
@@ -321,7 +322,7 @@ resultados_sexo <- total_por_sexo(total_sexo)
 datatable(resultados_sexo)
 ```
 
-**Basado en técnicas de manejo de datos:**
+*Basado en técnicas de manejo de datos:*
 ```{r}
 ictus_por_sexo<- sexototal%>%
   group_by(Sexo)%>%
@@ -376,12 +377,12 @@ Tomamos como Test Hipótesis:
   
   H1: Medias distintas -->p-valor<0.05
   
-Tras realizar el anova(analisis de la varianza) con la edad como variable numérica y el sexo como variable categórica vemos que el p-valor es muy bajo rechazamos la H0, lo que nos indica que el sexo es un factor estadisticamente significativo para los ictus.
+Tras realizar el anova (análisis de la varianza) con la edad como variable numérica y el sexo como variable categórica vemos que el p-valor es muy bajo por lo que rechazamos la H0, lo que nos indica que el sexo es un factor estadisticamente significativo para los ictus.
 
 
 ## 5.2 Calidad del aire
 
-Calculamos la media de los factores más destacados del aire, agrupados por fecha y provincia.
+Calculamos la media de las sustancias más destacadas del aire, agrupados por fecha (mes y año) y provincia.
 
 ```{r}
 media_factores_aire <-calidad_aire%>%
@@ -405,13 +406,13 @@ media_factores_aire <-calidad_aire%>%
 ```{r}
 datatable(media_factores_aire)
 ```
-Probablemente, al igual que nosotros antes de realizar este trabajo no sepáis lo que es la sustancia PM2,5, esta esun conjunto de partículas que se encuentran en suspension aerodinámica cuyo diámetro es inferior a 2,5 micras.
+Probablemente, al igual que nosotros antes de realizar este trabajo no sepáis lo que es la sustancia PM2,5, esta es un conjunto de partículas que se encuentran en suspensión aerodinámica cuyo diámetro es inferior a 2,5 micras.
 
 ![Imagen de PM2,5](INPUT/images/pm25.jpg)
 
 ### 5.2.1 Cambio formato fecha:
 
-Necesitamos cambiar el formato de la fecha, para así poder trabajar y agrupar datos que contienen fechas, ya que el paquete lubridate permite hacer lo que necesitamos con las fechas, en formato fecha.
+Necesitamos cambiar el formato de la fecha (de caracter a fecha), para así poder trabajar y agrupar datos que contienen fechas, ya que el paquete lubridate permite hacer lo que necesitamos con las fechas, en formato fecha.
 
 Además, tenemos que usar un case_when para que Ávila pase a llamarse Avila para luego poder hacer diferentes operaciones necesarias.
 
@@ -560,23 +561,13 @@ Esta faceta la usamos para representar las concentraciones de cada sustancia est
 
 Esto lo podemos ver claramente por ejemplo en el O3 de Segovia 2020 y de Ávila 2020.
 
-Ahora vamos a realizar 3 gráficos, uno para cada sustancia
+Ahora vamos a realizar 3 gráficos de barras, uno para cada sustancia
 
 ### 5.2.6 Gráfico de barras de la media de NO:
 
 Gráfico que muestra la media de NO (en una escala de colores) por provincia y mes:
 
-```{r}
-calcula_media_sustancias_por_provincia_y_meses %>%
-  ggplot(aes(x = reorder(factor(provincia),factor(anyo)), y = num_ictus)) + 
-  geom_bar(stat = "identity", aes(fill = avg_NO)) +
-  scale_fill_gradient(low = "turquoise", high = "blue" , space = "Lab", na.value = "grey50", guide = "colourbar") +
-  labs(x = "", y = "Número ictus", fill = "Media de concentración de NO") +
-  theme_classic()
 
-```
-
-En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de NO, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
 
 
 ```{r}
@@ -594,25 +585,14 @@ ggplotly(p, tooltip = c("x", "y", "fill"))
 
 ```
 
-Esta gráfica es una versión mejorada de la anterior, en la cual aparecen representados los ictus que ha habido en cada provincia y en cada año, cada barra tiene 12 partes diferenciadas (una por mes) en las de los años 2020 en adelante; en el año 2019 aparecen menos ya que solo contamos con datos de octubre en adelante.
+En esta gráfica aparecen representados los ictus que ha habido en cada provincia y en cada año, cada barra tiene 12 partes diferenciadas (una por mes) en las de los años 2020 en adelante; en el año 2019 aparecen menos ya que solo contamos con datos de octubre en adelante.
+
 Las barras están coloreadas de distintas tonalidades, corriespondiendose las oscuras a mayores concentraciones de NO y las claras a menores concentraciones de NO.
-Además pasando el cursor por las barras, gracias a la tecnología del paquete plotly, podemos ver podemos ver con que año y provincia se corresponde esa barra, la media de concentración de NO en ese mes y también el número total de ictus que han ocurrido ese mes.
+
+Además pasando el cursor por las barras, gracias a la tecnología del paquete plotly, podemos ver con que año y provincia se corresponde esa barra, la media de concentración de NO en ese mes y también el número total de ictus que han ocurrido ese mes.
 
 
 ### 5.2.7 Gráfico de barras de la media de O3:
-
-Gráfico que muestra la media de 03 (en una escala de colores) por provincia y mes:
-
-```{r}
-calcula_media_sustancias_por_provincia_y_meses %>%
-  distinct(provincia, .keep_all = TRUE) %>%  
-  ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
-  geom_bar(stat = "identity", aes(fill = avg_O3)) +
-  scale_fill_gradient(low = "turquoise", high = "blue", space = "Lab", na.value = "grey50", guide = "colourbar") +
-  labs(x = "", y = "Número ictus", fill = "Media de concentración de 03") +
-  theme_classic()
-```
-En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de O3, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
 
 
 ```{r}
@@ -628,28 +608,16 @@ p1 <- calcula_media_sustancias_por_provincia_y_meses %>%
 ggplotly(p1, tooltip = c("x", "y", "fill"))
 ```
 
-Esta gráfica es una versión mejorada de la anterior, en la cual aparecen representados los ictus que ha habido en cada provincia y en cada año, cada barra tiene 12 partes diferenciadas (una por mes) en las de los años 2020 en adelante; en el año 2019 aparecen menos ya que solo contamos con datos de octubre en adelante.
-Las barras están coloreadas de distintas tonalidades, corriespondiendose las oscuras a mayores concentraciones de O3y las claras a menores concentraciones de O3.
+En esta gráfica aparecen representados los ictus que ha habido en cada provincia y en cada año, cada barra tiene 12 partes diferenciadas (una por mes) en las de los años 2020 en adelante; en el año 2019 aparecen menos ya que solo contamos con datos de octubre en adelante.
+
+Las barras están coloreadas de distintas tonalidades, corriespondiendose las oscuras a mayores concentraciones de O3 y las claras a menores concentraciones de O3.
+
 Además pasando el cursor por las barras, gracias a la tecnología del paquete plotly, podemos ver podemos ver con que año y provincia se corresponde esa barra, la media de concentración de NO en ese mes y también el número total de ictus que han ocurrido ese mes.
 
 
 
 
 ### 5.2.8 Gráfico de barras de la media de PM2,5:
-
-Gráfico que muestra la media de PM2.5 (en una escala de colores) por provincia y mes:
-
-```{r}
-calcula_media_sustancias_por_provincia_y_meses %>%
-  distinct(provincia, .keep_all = TRUE) %>%  
-  ggplot(aes(x = reorder(provincia,anyo), y = num_ictus)) + 
-  geom_bar(stat = "identity", aes(fill = avg_PM25)) +
-  scale_fill_gradient(low = "turquoise", high = "blue", space = "Lab", na.value = "grey50", guide = "colourbar") +
-  labs(x = "", y = "Número ictus", fill = "Media de concentración de PM2.5") +
-  theme_classic()
-
-```
-En esta gráfica aparecen representados los números de ictus por  provincia y la concentración de O3, la cual aparece pintada más oscura cuando es mayor y más clara cuando es menor.
 
 
 ```{r}
@@ -665,9 +633,12 @@ p2 <- calcula_media_sustancias_por_provincia_y_meses %>%
 ggplotly(p2, tooltip = c("x", "y", "fill"))
 ```
 
-Esta gráfica es una versión mejorada de la anterior, en la cual aparecen representados los ictus que ha habido en cada provincia y en cada año, cada barra tiene 12 partes diferenciadas (una por mes) en las de los años 2020 en adelante; en el año 2019 aparecen menos ya que solo contamos con datos de octubre en adelante.
-Las barras están coloreadas de distintas tonalidades, corriespondiendose las oscuras a mayores concentraciones de O3y las claras a menores concentraciones de O3.
-Además pasando el cursor por las barras, gracias a la tecnología del paquete plotly, podemos ver podemos ver con que año y provincia se corresponde esa barra, la media de concentración de NO en ese mes y también el número total de ictus que han ocurrido ese mes.
+En esta gráfica aparecen representados los ictus que ha habido en cada provincia y en cada año, cada barra tiene 12 partes diferenciadas (una por mes) en las de los años 2020 en adelante; en el año 2019 aparecen menos ya que solo contamos con datos de octubre en adelante.
+
+Las barras están coloreadas de distintas tonalidades, corriespondiendose las oscuras a mayores concentraciones de PM2.5 y las claras a menores concentraciones de PM2.5.
+
+Además pasando el cursor por las barras, gracias a la tecnología del paquete plotly, podemos ver podemos ver con que año y provincia se corresponde esa barra, la media de concentración de PM2.5 en ese mes y también el número total de ictus que han ocurrido ese mes.
+
 Cabe destacar que en este caso en concreto, hay muchos valores NaN, que son los que aparecen de color gris.
 
 
@@ -688,10 +659,7 @@ numero_ictus_dia_semana %>%
 
 ```
 
-
-
 Por lo leído y descrito en uno de los artículos, niveles altos de NO el día de ingreso conlleva a mas riesgo de mortalidad, al ser nuestros datos de altas hospitalarias por ictus y no de muertes, lo que vamos a intentar ver es si los días que hay un mayor número de ingresos coinciden con niveles altos de NO.
-
 
 ## 5.3 Centros de desintoxicación
 
@@ -737,6 +705,8 @@ datatable(poblacion_cyl)
 
 Para tener una referencia entre los centros de desintoxicación por provincia con el número de habitantes de esa provincia calcularemos cuál es el número de habitantes por centro; con el obetivo de ver realmente si hay más ictus en aquellas provincias donde el número de habitantes por centro es menor y el consumo de drogas es un factor significativo en los ictus o por el contrario no lo es.
 
+Unimos la población de Castilla y León con la tabla Centros.
+
 
 ```{r}
 pob_centros <- full_join(poblacion_cyl,Centros)
@@ -744,7 +714,6 @@ tabla <- pob_centros%>%
   select(provincia,Poblacion_total,n)
 source("INPUT/functions/divide.R")
 hab_centro <- divide(tabla$Poblacion_total,tabla$n)
-#faltaria indicar que con que provincia se corresponden esos datos.
 tabla$hab_centro <- hab_centro
 resultado <- tabla %>%
   select(provincia, hab_centro)
@@ -755,7 +724,7 @@ resultado <- tabla %>%
 datatable(resultado)
 ```
 
-Lo lógico es esperar que en las provincias que cuentan con un menor número de habitantes, haya menor número de ictus y menor número de centros de desintoxicación.
+Idea intuitiva: lo lógico es esperar que en las provincias que cuentan con un menor número de habitantes, haya menor número de ictus y menor número de centros de desintoxicación.
 
 ```{r}
 numero_ictus <- ictus_por_provincia(Provincias)
@@ -797,6 +766,8 @@ datos %>%
 
 ```
 
+Gráfica que representa el número de ictus por provincia marcando con gradiente de intensidad el número de centros.
+
 
 ### 5.3.2 Gráfico de barras en el que representamos el número de habitantes por centro para cada provincia:
 
@@ -832,13 +803,17 @@ tabla_metricas <- tabla_centros %>%
 
 ```{r}
 ggplot(tabla_metricas, aes(x = Numero_centros, y = Numero_de_ictus)) +
-  geom_point() +
+  geom_point(aes(colour=factor(Provincia))) +
   geom_smooth() +
   labs(title = "Relación entre numero de centros y numero de ictus",
        x = "Centros s",
-       y = "Número de ictus ")
+       y = "Número de ictus",
+       colour="Provincia")
 ```
+Vemos que si queremos trazar una linea tenemos mucha variabilidad lo que no nos aporta nada siginificativo para lo que queremos.
+
 ### 5.3.5 Regresión lineal de los centros:
+
 ```{r}
 modelo_regresion_lineal <- lm(
   Numero_centros ~ Porcentaje_ictus_por_hab,
@@ -871,11 +846,13 @@ Por lo tanto,visualmente y falta de un estudio estadístico preciso no podemos d
 
 Queda demostrado que tanto la edad como el sexo influyen en el riesgo de sufrir un ictus, esto lo hemos comprobado realizando una regresión polinómica (edad) y un ANOVA (sexo), con sus correspondientes gráficas para hacerlo más visual.
 
-En cuanto a las sustancias del aire, podemos decir que la concentración de NO y la de PM2,5 si que se relacionan con la probabilidad de sufrir un ictus; mientras que la concentración de O3 no podemos llegar a saber si verdaderamente esta relacionada ya que lo que está comprobado es que el hecho de que haya elevadas concentraciones de NO aumenta la mortalidad por ictus en ese día, y nuestros datos no son de muertes sino de altas hospitalarias.
+En cuanto a las sustancias del aire, podemos decir que la concentración de O3 y la de PM2,5 si que se relacionan con la probabilidad de sufrir un ictus;esto es porque en sus gráficas de dispersión vemos pendientes positivas que indican que hay más ictus a mayores concentraciones mientras que la concentración de NO no podemos llegar a saber si verdaderamente esta relacionada ya que lo que está comprobado es que el hecho de que haya elevadas concentraciones de NO aumenta la mortalidad por ictus en ese día, y nuestros datos no son de muertes sino de altas hospitalarias.
+
 
 En relación con la calidad del aire, nos gustaría destacar que para poder obtener una salud global (la salud de las poblaciones en el contexto general) deberíamos ser todos plenamente conscientes de intentar producir la menor cantidad de sustancias nocivas para nuestra salud, siempre y cuando esto este en nuestra mano.
 
+
 En relación con la cantidad de centros, no podemos determinar si el que haya más numero de centros reduce la probabilidad de sufrir un ictus o la aumenta.
 
-.
+
 
