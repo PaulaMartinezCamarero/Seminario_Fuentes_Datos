@@ -381,6 +381,8 @@ Tomamos como Test Hipótesis:
   
 Tras realizar el anova (análisis de la varianza) con la edad como variable numérica y el sexo como variable categórica vemos que el p-valor es muy bajo por lo que rechazamos la H0, lo que nos indica que el sexo es un factor estadisticamente significativo para los ictus.
 
+Se debería validar el modelo a partir de los residuos y ver que se cumple: independencia, homocedasticidad y normalidad.
+
 
 ## 5.2 Calidad del aire
 
@@ -871,5 +873,5 @@ Para la realización de nuestro seminario, nos hemos basado en el [repositorio d
 
 5. [En relación con el NO](https://digibuo.uniovi.es/dspace/handle/10651/72686)
 
-
+6. [Anova](https://biocosas.github.io/R/050_anova.html)
 
