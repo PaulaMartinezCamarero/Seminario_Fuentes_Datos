@@ -13,7 +13,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE)
 ```
-![Imagen ictus](./INPUT/images/ictus.png)
+![Imagen 1: Ictus](./INPUT/images/ictus.png)
 
 
 **Link del repositorio de github [aquí](https://github.com/PaulaMartinezCamarero/Seminario_Fuentes_Datos)**
@@ -48,13 +48,13 @@ library(DT)
 
 En nuestro seminario vamos a estudiar las altas hospitalarias por ictus, en los diferentes hospitales de Castilla y León durante casi cinco años, y como estas, están relacionadas con distintos factores de riesgo.
 
-Lo primero de todo, explicar que los factores de riesgo son características o circunstancias que atentan contra el equilibrio, contra la salud, y que causan enfermedades o muerte. [senado1999factores](http://scielo.sld.cu/scielo.php?pid=s0864-21251999000400018&script=sci_arttext)
+Lo primero de todo, explicar que los factores de riesgo son características o circunstancias que atentan contra el equilibrio, contra la salud, y que causan enfermedades o muerte. [[senado1999factores]](http://scielo.sld.cu/scielo.php?pid=s0864-21251999000400018&script=sci_arttext)
 
 Durante el desarrollo de nuestro seminario vamos a trabajar con datos de dos factores de riesgo, los cuales son: la edad, el sexo, la calidad del aire y valorar si los centros de desintoxicación los podemos considerar como factor de riesgo  o como factor de prevención de sufrir un ictus.
 
 En cuanto al sexo esta demostrado que el ictus tiene un mayor impacto en hombres. 
 
-La calidad del aire es quizas un factor de riesgo del ictus, quizás poco conocido, pero estudios confirman que "Niveles más elevados de NO el día de ingreso conlleva un aumento del riesgo de mortalidad" [suarez2024influencia]
+La calidad del aire es quizas un factor de riesgo del ictus, quizás poco conocido, pero estudios confirman que "Niveles más elevados de NO el día de ingreso conlleva un aumento del riesgo de mortalidad" [[suarez2024influencia]](https://digibuo.uniovi.es/dspace/handle/10651/72686)
 
 
 # 3. Objetivos
@@ -412,7 +412,7 @@ datatable(media_factores_aire)
 ```
 Probablemente, al igual que nosotros antes de realizar este trabajo no sepáis lo que es la sustancia PM2,5, esta es un conjunto de partículas que se encuentran en suspensión aerodinámica cuyo diámetro es inferior a 2,5 micras.
 
-![Imagen de PM2,5](INPUT/images/pm25.jpg)
+![Imagen 2: PM2,5](INPUT/images/pm25.jpg)
 
 ### 5.2.1 Cambio formato fecha:
 
